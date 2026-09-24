@@ -1,0 +1,135 @@
+.news-section {
+    background: #E9E9E9;
+    @include Container;
+
+    .trending-section {
+      .trending-card {
+        position: relative;
+        img {
+          width: 100%;
+          border-radius: 8px;
+        //   height: 500px;
+        }
+        .trending-label {
+          top: 20px;
+          left: 20px;
+          background-color: #167ac6;
+          color: white;
+          padding: 5px 10px;
+          font-size: 18px;
+          font-weight: 400;
+        }
+        .trending-overlay {
+          bottom: 20px;
+          left: 20px;
+          color: white;
+          padding: 20px;
+          background: rgba(0, 0, 0, 0.5);
+          h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+          }
+        }
+      }
+    }
+  
+    .latest-news {
+      border: 1px solid #0c87e5;
+      padding: 5px 35px;
+
+      .section-title {
+        background-color: #167ac6;
+        color: white;
+        padding: 10px 10px;
+        font-size: 1.2rem;
+        font-weight: 400;
+        text-align: center;
+        margin-top: -16px;
+        margin-bottom: 15px;
+      }
+  
+      .news-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        .news-thumb {
+          width: 30%;
+          height: auto;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-right: 15px;
+        }
+        .news-details {
+          h6 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 400;
+            text-decoration: underline;
+          }
+          p {
+            font-size: 0.8rem;
+            color: #777;
+            margin: 5px 0 0;
+          }
+        }
+      }
+    }
+  
+    .exclusive-news-section {
+      .exclusive-title {
+        background-color: #167ac6;
+        color: white;
+        padding: 9px 10px;
+        font-size: 18px;
+        font-weight: 400;
+        margin-bottom: 15px;
+        width: 21%;
+        text-align: center;
+      }
+  
+      .exclusive-card {
+        margin-bottom: 20px;
+        background: #ffffff;
+        border-radius: 7px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        
+        img {
+          width: 100%;
+          border-radius: 8px;
+        }
+        .exclusive-details {
+            // margin-bottom: 20px;
+            padding: 8px 20px;
+            background: #ffffff;
+            border-radius: 7px;
+            // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+          h6 {
+            font-size: 16px;
+            font-weight: 500;
+          }
+          p {
+            font-size: 0.8rem;
+            color: #777;
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) { /* For mobile and small devices */
+    .news-section .trending-section .trending-card img {
+        height: fit-content; /* Allows the image to fit content */
+    }
+}
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .news-section .latest-news {
+        margin-top: 35px;
+    }
+    .exclusive-title{
+      width: 60% !important;
+    }
+  }

@@ -1,0 +1,332 @@
+// Custome Code 
+
+    /* Overlay */
+    .popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.65);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    }
+    
+    /* Card */
+    .popup-card {
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
+    width: 360px;
+    padding: 40px 25px 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    animation: fadeIn 0.3s ease-in-out;
+    font-family: "Poppins", sans-serif;
+    }
+    
+    /* Close button (top-right) */
+    .popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.08); /* light transparent gray */
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    line-height: 26px;
+    text-align: center;
+    transition: 0.3s;
+    }
+    .popup-close:hover {
+    background: rgba(0,0,0,0.15);
+    color: #000;
+    }
+    
+    /* Title */
+    .popup-card h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 800;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    }
+    
+    /* Text */
+    .popup-card p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 22px;
+    line-height: 1.5;
+    }
+    
+    /* Input */
+    .popup-card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+    }
+    .popup-card input:focus {
+    border-color: #167ac6;
+    box-shadow: 0 0 6px rgba(22, 122, 198, 0.3);
+    }
+    
+    /* Submit button (form button only) */
+    .popup-card form button {
+    padding: 12px;
+    width: 100%;
+    background: #167ac6; /* Flypped blue */
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    }
+    .popup-card form button:hover {
+    background: #125f99;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 122, 198, 0.3);
+    }
+    
+    /* Footer link */
+    .popup-footer {
+    margin-top: 15px;
+    }
+    .popup-footer small a {
+    color: #999;
+    text-decoration: none;
+    font-size: 13px;
+    }
+    .popup-footer small a:hover {
+    text-decoration: underline;
+    }
+    
+    /* Fade in animation */
+    @keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.9);}
+    to {opacity: 1; transform: scale(1);}
+    }
+ 
+
+.custom-footer-link {
+        color: #ffc107;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .custom-footer-link:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+    .email-link {
+        font-size: 13px; /* Slightly smaller to fit columns */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
+        .footer-socials{
+            display:flex;
+            gap:12px;
+            align-items:center;
+            }
+            .social-circle{
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            text-decoration:none;
+            background:#ffffff;           /* white circles like image */
+            color:#dc3545;                /* default icon color */
+            transition:transform .2s ease, opacity .2s ease;
+            }
+            .social-circle:hover{
+            transform:translateY(-2px);
+            opacity:.9;
+            }
+            .social-circle i{
+            font-size:18px;
+            }
+
+            /* Optional: per-network colors (remove if you want all same) */
+            .social-circle[aria-label="Facebook"]{ color:#1877f2; }
+            .social-circle[aria-label="Twitter"]{ color:#1da1f2; }
+            .social-circle[aria-label="Instagram"]{ color:#e1306c; }
+            .social-circle[aria-label="Pinterest"]{ color:#bd081c; }
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding-left: 10px;
+            transform: translateX(5px);
+        }
+
+        .category-link {
+            /*color: #ffffff !important;*/
+            text-decoration: none;
+            font-weight: 500;
+            flex: 1;
+            transition: color 0.3s ease;
+        }
+
+        .category-link:hover {
+            color: #ffc107 !important;
+            text-decoration: none;
+        }
+
+        .post-count {
+            background-color: #ffc107;
+            color: #fff !important;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .category-item:hover .post-count {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+        .footer-section{
+        background-color: #023359;
+        }
+
+        .footer-section .footer-links li .post-count {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .ft_bottom{
+            background: #167ac6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .category-item {
+                font-size: 14px;
+            }
+            
+            .post-count {
+                font-size: 11px;
+                padding: 1px 6px;
+            }
+            .footer-socials {
+            justify-content: center;
+        }
+}
+// Custome Code End
+
+.footer-section {
+    background-color: #000; /* Black background */
+    color: #fff;
+    padding: 40px 0;
+  
+    .footer-logo {
+      max-width: 120px;
+    }
+  
+    .about-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  
+    .footer-title {
+      color: #ffd700; /* Yellow color for the headings */
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+  
+    .footer-blog-item {
+      margin-bottom: 20px;
+  
+      .footer-blog-category {
+        color: #ffd700; /* Yellow color */
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+  
+      .footer-blog-text a{
+        color: aliceblue;
+        text-transform: capitalize;
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+  
+      .footer-blog-date {
+        font-size: 0.75rem;
+        color: #999;
+      }
+    }
+  
+    .footer-links {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+  
+      li {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        color: #fff;
+  
+        .post-count {
+          font-weight: bold;
+          color: #ffd700; /* Yellow color for the number of posts */
+        }
+  
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-size: 0.9rem;
+  
+          &:hover {
+            color: #ffd700; /* Yellow color on hover */
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .footer-section {
+      text-align: center;
+  
+      .col-lg-3 {
+        margin-bottom: 30px;
+      }
+  
+      .footer-links li {
+        justify-content: center;
+      }
+    }
+  }
+  

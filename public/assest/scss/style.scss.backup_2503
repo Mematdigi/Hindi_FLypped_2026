@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+// GLOBAL CSS
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+// COMMEN STYLING
+body{
+    font-family: "Josefin Sans", system-ui;
+}
+
+h1, h2, h5{
+    font-family: "Inria Sans", sans-serif;
+
+}
+a{
+    text-decoration: none;
+    font-family: "Montserrat", sans-serif;
+    text-transform: uppercase;
+}
+
+.blog-content {
+    transition: max-height 0.4s ease-in-out;
+}
+
+.blog-tags .badge {
+    margin-right: 5px;
+    font-size: 14px;
+}
+
+
+
+.readMoreBtn {
+    background-color: #f8f9fa !important;
+    color: #078add !important;
+    border: 1px solid !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+    padding: 5px 35px;
+    text-decoration: none;
+}
+
+
+
+.blog-tags .badge{
+    margin-right: 5px;
+    font-size: 14px;
+    color: #c0dffb;
+    font-weight: 500;
+    padding: 7px 30px;
+    margin-bottom: 10px;
+    background-color: #078add;
+}
+
+.latest-news .news-item{
+    flex-direction: column;
+    .news-thumb{
+        width: 100%;
+    }
+}
+
+// Pegination Section 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination li a {
+    color: #007bff; /* Link color */
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    margin-left: -1px;
+    background-color: #fff;
+    text-decoration: none;
+}
+
+.pagination li.active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+
+
+
+// MIXING CSS
+@mixin Container{
+    width: 100%;
+    height: fit-content;
+    padding: 70px 30px;
+}
+
+@mixin FlexBox{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin BackImg{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+// Impoted Files
+@import "_header";
+@import "_blogSlider";
+@import "_instaReels";
+@import "_trending_news";
+@import "_Entertainment";
+@import "_exclusive-videos";
+@import "_footer";
+
+// Other Page Link
+@import "_blog_detals";
+@import "_categories";
+@import "_event";
+@import "_author_profile";

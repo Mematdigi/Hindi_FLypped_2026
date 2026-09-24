@@ -1,0 +1,15 @@
+# Disable directory browsing
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # 1. FLYPPED CUSTOM SITEMAP RULE
+    RewriteRule ^google-news-sitemap\.xml$ sitemap-news.php [L]
+    
+    # 2. CODEIGNITER DEFAULT ROUTING
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>

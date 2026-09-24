@@ -1,0 +1,49 @@
+# CodeIgniter Writable & Cache
+writable/
+admin/writable/
+wp-content/td_cache/
+w3tc-config/
+
+# All WordPress Media & Upload Variations
+wp-content/uploads/
+wp-content/uploads_old/
+wp-content/uploads-webpc/
+admin/wp-content/uploads/
+
+# Dependencies
+node_modules/
+vendor/
+admin/node_modules/
+admin/vendor/
+
+# Environment & Logs
+env
+.env
+*.log
+error_log
+find_php*.txt
+
+# AI Tools & Archives
+repomix-output.*
+*.zip
+*.tar
+*.tar.gz
+*.sql
+wp-content/uploads_old/
+wp-content/uploads-webpc/
+wp-content/td_cache/
+w3tc-config/
+node_modules/
+admin/node_modules/
+admin/vendor/
+repomix-output.*
+# WordPress Plugins and Themes
+wp-content/plugins/
+wp-content/themes/
+admin/wp-content/plugins/
+admin/wp-content/themes/
+# WordPress Plugins and Themes
+wp-content/plugins/
+wp-content/themes/
+admin/wp-content/plugins/
+admin/wp-content/themes/

@@ -1,0 +1,74 @@
+.reels-section {
+  @include Container;
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    position: relative;
+   
+      &::after{
+        content: "";
+        width: 100%;
+        height: 3px;
+        background-color: #ffd700;
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+      }
+  }
+
+  .view-all-link {
+    font-size: 1rem;
+    color: #000;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .carousel-inner {
+    .row {
+      display: flex;
+    }
+
+    .reel-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .reel-video-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .carousel-inner {
+      .col-md-6 {
+        flex: 0 0 50%; /* Show 2 reels per view on mobile */
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    .carousel-inner {
+      .col-sm-6 {
+        flex: 0 0 100%; /* Show 1 reel per view on very small screens */
+      }
+    }
+  }
+}

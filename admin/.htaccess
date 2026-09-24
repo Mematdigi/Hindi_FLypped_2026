@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------
+# Enable Rewrite Engine
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# ----------------------------------------------------------------------
+# --- Serve .webp when .jpg or .png requested --------------------------
+# ----------------------------------------------------------------------
+# For any request ending in .jpg or .png, if a .webp version exists — serve it
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} (.+)\.(jpe?g|png)$
+RewriteCond %1.webp -f
+# Optional browser check removed to force .webp serve
+RewriteRule ^(.+)\.(jpe?g|png)$ $1.webp [T=image/webp,L]
+
+# ----------------------------------------------------------------------
+# --- Allow direct access to real static assets ------------------------
+# ----------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# ----------------------------------------------------------------------
+# --- CodeIgniter routing ---------------------------------------------
+# ----------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+</IfModule>
+
+# ----------------------------------------------------------------------
+# MIME type for WebP
+# ----------------------------------------------------------------------
+<IfModule mod_mime.c>
+AddType image/webp .webp
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Security and Caching
+# ----------------------------------------------------------------------
+Options -Indexes
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png  "access plus 1 year"
+</IfModule>

@@ -1,0 +1,67 @@
+.exclusive-videos-section {
+    padding-top: 30px;
+  
+    /* Section Title */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+  
+      /* Yellow underline */
+      &:after {
+        content: "";
+        width: 100%;
+        height: 3px;
+        background-color: #ffd700;
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+      }
+    }
+  
+    /* Video Card Styling */
+    .video-card {
+      iframe {
+        width: 100%;
+        height: 200px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+  
+      .video-caption {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    }
+  
+    /* Carousel Controls Styling */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: #ffd700; /* Yellow for controls */
+      border-radius: 50%;
+    }
+  
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .carousel-inner .carousel-item .col-lg-3 {
+        flex: 0 0 100%; /* Show one video at a time on mobile */
+        max-width: 100%;
+      }
+      
+      .video-card iframe {
+        height: 180px;
+      }
+    }
+  
+    /* On desktop, show 4 videos, hide the 5th */
+    @media (min-width: 992px) {
+      .carousel-inner .carousel-item .col-lg-3 {
+        flex: 0 0 25%; /* Show 4 videos per row */
+        max-width: 25%;
+      }
+    }
+  }
+  

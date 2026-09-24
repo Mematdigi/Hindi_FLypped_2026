@@ -1,0 +1,200 @@
+<?php
+use CodeIgniter\Router\RouteCollection;
+
+/**
+ * @var RouteCollection $routes
+ */
+
+// ============================================================
+//  CACHE MANAGER
+// ============================================================
+$routes->group('cache-manager', function($routes) {
+    $routes->get('/', 'CacheManager::index');
+    $routes->get('stats', 'CacheManager::stats');
+    $routes->get('clear', 'CacheManager::clear');
+});
+
+// ============================================================
+//  SPECIAL FILES
+// ============================================================
+$routes->get('llms.txt',                 'LlmsController::index');
+$routes->get('robots.txt',               'RobotsController::index');
+$routes->get('sitemap',                  'SitemapController::htmlSitemap');
+$routes->get('sitemap.xml',              'SitemapController::index');
+$routes->get('sitemap-pages.xml',        'SitemapController::pages');
+$routes->get('static-pages-sitemap.xml', 'SitemapController::staticPages');
+$routes->get('sitemap-(:segment).xml',   'SitemapController::category/$1');
+$routes->get('sitemap.xsl',              'SitemapController::sitemapXSL');
+$routes->get('urlset.xsl',               'SitemapController::urlsetXSL');
+
+// ============================================================
+//  HOME
+// ============================================================
+$routes->get('/', 'Home::index');
+
+// ============================================================
+//  STATIC PAGES (one definition each)
+// ============================================================
+$routes->get('disclaimer',       'DisclaimerController::index');
+$routes->get('privacy-policy',   'PrivacyPolicyController::index');
+$routes->get('about-us',         'Categories::index/about-us');
+$routes->get('terms-of-service', 'Categories::index/terms-of-service');
+$routes->get('write-for-us',     'WriteForUsController::index');
+$routes->get('contact',          'ContactController::index');
+
+// ============================================================
+//  SUBSCRIBE
+// ============================================================
+$routes->post('subscribe',       'SubscribeController::save');
+$routes->get('subscribe/check',  'SubscribeController::check');
+
+// ============================================================
+//  AUTHENTICATION
+// ============================================================
+$routes->get('login',            'UserController::login');
+$routes->post('sign-in',         'UserController::signIn');
+$routes->get('sign-out',         'UserController::signOut');
+$routes->post('register-user',   'UserController::registerUser');
+
+// ============================================================
+//  SEARCH — keep above all dynamic slug routes
+// ============================================================
+$routes->match(['get', 'post'], 'search',  'Home::search');
+$routes->get('search/suggestions',         'Home::searchSuggestions');
+$routes->get('search/recent',              'Home::searchRecentPosts');
+
+// Legacy redirects
+$routes->get('old-search', static function() { return redirect()->to('/search'); });
+$routes->get('find',       static function() { return redirect()->to('/search'); });
+
+// ============================================================
+//  AUTHORS
+// ============================================================
+$routes->get('authors',                                       'AuthorProfileController::index');
+$routes->get('author/([a-zA-Z0-9@._-]+)',                    'AuthorProfileController::profile/$1');
+$routes->get('author/([a-zA-Z0-9@._-]+)/posts/(\d+)',        'AuthorProfileController::getPosts/$1/$2');
+
+// ============================================================
+//  BLOG ACTIONS
+// ============================================================
+$routes->post('blog/submitReview', 'BlogDetails::submitReview');
+
+// ============================================================
+//  EVENTS
+// ============================================================
+$routes->get('events',        'EventsController::index');
+$routes->get('events/(:num)', 'EventsController::show/$1');
+
+// ============================================================
+//  PAYMENTS
+// ============================================================
+$routes->post('verify-payment', 'PaymentController::verifyPayment');
+
+// ============================================================
+//  RSS FEEDS
+// ============================================================
+$routes->get('rss',            'RssController::index');
+$routes->get('feed',           'RssController::index');
+$routes->get('rss/(:segment)', 'RssController::category/$1');
+
+// ============================================================
+//  SEO CONVENIENCE ROUTES
+// ============================================================
+$routes->get('latest-news', 'Home::index');
+$routes->get('trending',    'Home::trending');
+$routes->get('popular',     'Home::popular');
+
+// ============================================================
+//  API — single consolidated group
+// ============================================================
+$routes->group('api', function($routes) {
+    $routes->get('search/suggestions', 'Home::searchSuggestions');
+    $routes->get('posts/search',       'Home::search');
+    $routes->post('track/search',      'Analytics::trackSearch');
+});
+
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->get('home',                       'HomeApiController::index');
+    $routes->get('posts',                      'HomeApiController::posts');
+    $routes->get('categories',                 'HomeApiController::categories');
+    $routes->get('search',                     'HomeApiController::search');
+    $routes->get('suggestions',                'HomeApiController::suggestions');
+    $routes->get('post/(:num)',                'HomeApiController::post/$1');
+    $routes->get('post/(:segment)/(:segment)', 'HomeApiController::postBySlug/$1/$2');
+    $routes->get('related/(:num)',             'HomeApiController::relatedPosts/$1');
+    $routes->get('url',                        'HomeApiController::postByUrl');
+
+    // Authors
+    $routes->get('authors',              'AuthorController::index');
+    $routes->get('authors/search',       'AuthorController::search');
+    $routes->get('authors/(:num)',       'AuthorController::show/$1');
+    $routes->post('authors',             'AuthorController::create');
+    $routes->put('authors/(:num)',       'AuthorController::update/$1');
+    $routes->patch('authors/(:num)',     'AuthorController::update/$1');
+    $routes->delete('authors/(:num)',    'AuthorController::delete/$1');
+    $routes->get('authors/(:num)/posts', 'AuthorController::getUserPosts/$1');
+    $routes->get('authors/(:num)/stats', 'AuthorController::getUserStats/$1');
+    //export post url in excel
+    $routes->get('export-posts', 'HomeApiController::exportPostsExcel');
+});
+
+// ============================================================
+//  CRICKET API
+// ============================================================
+$routes->get('api/cricket/match-info',       'WorldcupController::apiGetMatchInfo');
+$routes->get('api/cricket/matches',          'WorldcupController::apiGetMatches');
+$routes->get('api/cricket/series-info',      'WorldcupController::apiGetSeriesInfo');
+$routes->get('api/cricket/upcoming-matches', 'WorldcupController::apiGetUpcomingMatches');
+$routes->get('api/cricket/todaymatches',     'WorldcupController::apiGetTodayMatches');
+$routes->get('api/cricket/scorecard',        'WorldcupController::apiGetMatchScorecard');
+
+// ============================================================
+//  EXPLICIT NAMED CATEGORY ROUTES
+//  *** CRITICAL: These MUST come BEFORE the blog catch-all ***
+//  *** ipl2026 contains digits so the catch-all ([a-zA-Z0-9-]+) ***
+//  *** would swallow it — explicit routes prevent that ***
+// ============================================================
+$routes->get('news',          'Categories::index/news');
+$routes->get('entertainment', 'Categories::index/entertainment');
+$routes->get('health-fitness','Categories::index/health-fitness');
+$routes->get('lifestyle',     'Categories::index/lifestyle');
+$routes->get('technology',    'Categories::index/technology');
+$routes->get('relationship',  'Categories::index/relationship');
+$routes->get('education',     'Categories::index/education');
+$routes->get('spiritual',     'Categories::index/spiritual');
+$routes->get('adhyatm',       'Categories::index/adhyatm');
+$routes->get('shiksha',       'Categories::index/shiksha');
+$routes->get('sports',        'Categories::index/sports');
+$routes->get('ipl2026',       'Categories::index/ipl2026');   // ← THE FIX
+
+// $routes->get('ipl2026', 'Categories::index/ipl2026');
+$routes->get('travel',        'Categories::index/travel');
+$routes->get('stories',       'Categories::index/stories');
+$routes->get('video',         'Categories::index/video');
+$routes->get('business',      'Categories::index/business');
+$routes->get('tech-gadgets',  'Categories::index/tech-gadgets');
+$routes->get('world',         'Categories::index/world');
+$routes->get('crazy-facts',   'Categories::index/crazy-facts');
+$routes->get('uncategorized', 'Categories::index/uncategorized');
+$routes->get('other',         'Categories::index/other');
+
+// Category with /category/ prefix + optional pagination
+$routes->get('category/(:segment)',             'Categories::index/$1');
+$routes->get('category/(:segment)/page/(:num)', 'Categories::index/$1/$2');
+
+// Category pagination (direct slug)
+$routes->get('(:segment)/page/(:num)', 'Categories::index/$1/$2');
+
+// ============================================================
+//  BLOG DETAIL ROUTES — MUST be LAST
+// ============================================================
+// Single slug:  /my-post-title
+$routes->get('([a-zA-Z0-9-]+)', 'BlogDetails::view/$1');
+
+// Category + slug:  /news/my-post-title
+$routes->get('(:segment)/([a-zA-Z0-9-]+)', 'BlogDetails::viewWithCategory/$1/$2');
+
+// ============================================================
+//  CUSTOM ERROR PAGE
+// ============================================================
+$routes->get('error_page', 'ErrorController::error404');

@@ -1,0 +1,204 @@
+<?php
+use CodeIgniter\Router\RouteCollection;
+
+/**
+ * @var RouteCollection $routes
+ */
+ 
+$routes->group('cache-manager', function($routes) {
+    $routes->get('/', 'CacheManager::index');
+    $routes->get('stats', 'CacheManager::stats');
+    $routes->get('clear', 'CacheManager::clear');
+});
+
+// Add this alongside your other routes (like your robots.txt route)
+$routes->get('llms.txt', 'LlmsController::index');
+$routes->get('sitemap', 'SitemapController::htmlSitemap');
+
+// Home Route
+$routes->get('/', 'Home::index');
+
+// Special Files Routes
+$routes->get('robots.txt', 'RobotsController::index');
+$routes->get('sitemap.xml', 'SitemapController::index');
+$routes->get('sitemap-pages.xml', 'SitemapController::pages');
+$routes->get('static-pages-sitemap.xml', 'SitemapController::staticPages');
+$routes->get('sitemap-(:segment).xml', 'SitemapController::category/$1');
+
+$routes->get('sitemap.xsl', 'SitemapController::sitemapXSL');
+$routes->get('urlset.xsl', 'SitemapController::urlsetXSL');
+
+// Subscribe Routes
+$routes->post('subscribe', 'SubscribeController::save');
+$routes->get('subscribe/check', 'SubscribeController::check');
+
+$routes->get('disclaimer', 'DisclaimerController::index');
+$routes->get('privacy-policy', 'PrivacyPolicyController::index');
+
+// =====================================================
+//                     SEARCH
+//  (Keep BEFORE any dynamic slug routes)
+// =====================================================
+
+// Results page (handles both GET and POST form submits)
+$routes->match(['get','post'], 'search', 'Home::search');
+
+// Autocomplete suggestions (frontend + API alias)
+// $routes->get('search/suggestions', 'Home::searchSuggestions');
+// $routes->group('api', function($routes) {
+//     $routes->get('search/suggestions', 'Home::searchSuggestions');
+//     $routes->post('track/search', 'Analytics::trackSearch');
+//     $routes->get('posts/search', 'Home::search'); // optional alias
+// });
+
+
+// app/Config/Routes.php
+
+$routes->get('search/suggestions', 'Home::searchSuggestions');
+$routes->get('search/recent', 'Home::searchRecentPosts'); //  ADD THIS
+
+$routes->group('api', function($routes) {
+    $routes->get('search/suggestions', 'Home::searchSuggestions');
+    $routes->post('track/search', 'Analytics::trackSearch');
+    $routes->get('posts/search', 'Home::search'); // optional alias
+});
+
+// Legacy redirects → /search
+$routes->get('old-search', static function () { return redirect()->to('/search'); });
+$routes->get('find',       static function () { return redirect()->to('/search'); });
+
+// Author Profile Routes
+$routes->get('authors', 'AuthorProfileController::index');
+$routes->get('author/([a-zA-Z0-9@._-]+)', 'AuthorProfileController::profile/$1');
+$routes->get('author/([a-zA-Z0-9@._-]+)/posts/(\d+)', 'AuthorProfileController::getPosts/$1/$2');
+
+// Blog Routes
+$routes->post('/blog/submitReview', 'BlogDetails::submitReview');
+
+// Event Routes
+$routes->get('/events', 'EventsController::index');
+$routes->get('/events/(:num)', 'EventsController::show/$1');
+
+// Payment Routes
+$routes->post('/verify-payment', 'PaymentController::verifyPayment');
+
+// Authentication Routes
+$routes->get('/login', 'UserController::login');
+$routes->post('/sign-in', 'UserController::signIn');
+$routes->get('/sign-out', 'UserController::signOut');
+$routes->post('/register-user', 'UserController::registerUser');
+
+// Contact Page Routes
+$routes->get('/contact', 'ContactController::index');
+
+// Write For Us Page Route
+$routes->get('/write-for-us', 'WriteForUsController::index');
+
+// Static Pages
+$routes->get('disclaimer', 'Categories::index/disclaimer');
+$routes->get('privacy-policy', 'Categories::index/privacy-policy');
+$routes->get('about-us', 'Categories::index/about-us');
+$routes->get('terms-of-service', 'Categories::index/terms-of-service');
+
+// RSS Feeds
+$routes->get('rss', 'RssController::index');
+$routes->get('feed', 'RssController::index');
+$routes->get('rss/(:segment)', 'RssController::category/$1');
+
+// API Routes Group
+$routes->group('api', function($routes) {
+    $routes->get('search/suggestions', 'Home::searchSuggestions');
+    $routes->post('track/search', 'Analytics::trackSearch');
+    $routes->get('posts/search', 'Home::search');
+});
+
+// SEO-Friendly Routes
+$routes->get('latest-news', 'Home::index');
+$routes->get('trending', 'Home::trending');
+$routes->get('popular', 'Home::popular');
+
+// Legacy Search Redirects
+$routes->get('old-search', function() {
+    return redirect()->to('/search');
+});
+$routes->get('find', function() {
+    return redirect()->to('/search');
+});
+
+// ========== DYNAMIC ROUTES (Keep these at the END) ==========
+
+// Category Routes - Updated with all categories from Excel
+// $routes->get('category/(news|entertainment|health-fitness|lifestyle|technology|relationship|sports|travel|stories|video)', 'Categories::index/$1');
+$routes->get('(entertainment|sports|business|tech-gadgets|technology|world|news|health-fitness|lifestyle|relationship|crazy-facts|travel|stories|video|uncategorized|other|education|adhyatm|spiritual|shiksha)', 'Categories::index/$1');
+
+// Legacy category routes (without /category/ prefix) for backward compatibility
+$routes->get('(entertainment|sports|business|tech-gadgets|technology|world|news|health-fitness|lifestyle|relationship|crazy-facts|travel|stories|video|uncategorized|other)', 'Categories::index/$1');
+
+// Category with pagination
+$routes->get('category/(:segment)/page/(:num)', 'Categories::index/$1/$2');
+
+//App api routes for posts
+
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->get('home', 'HomeApiController::index');
+    $routes->get('posts', 'HomeApiController::posts');
+    $routes->get('categories', 'HomeApiController::categories');
+    $routes->get('search', 'HomeApiController::search');
+    $routes->get('suggestions', 'HomeApiController::suggestions');
+    $routes->get('post/(:num)', 'HomeApiController::post/$1');
+    $routes->get('post/(:segment)/(:segment)', 'HomeApiController::postBySlug/$1/$2');
+    $routes->get('related/(:num)', 'HomeApiController::relatedPosts/$1');
+    $routes->get('url', 'HomeApiController::postByUrl');
+
+     // Author/User Management Routes
+    
+    // Get all users
+    $routes->get('authors', 'AuthorController::index');
+    
+    // Get single user by ID
+    $routes->get('authors/(:num)', 'AuthorController::show/$1');
+    
+    // Create new user
+    $routes->post('authors', 'AuthorController::create');
+    
+    // Update user
+    $routes->put('authors/(:num)', 'AuthorController::update/$1');
+    $routes->patch('authors/(:num)', 'AuthorController::update/$1');
+    
+    // Delete user
+    $routes->delete('authors/(:num)', 'AuthorController::delete/$1');
+    
+    // Get user posts
+    $routes->get('authors/(:num)/posts', 'AuthorController::getUserPosts/$1');
+    
+    // Get user statistics
+    $routes->get('authors/(:num)/stats', 'AuthorController::getUserStats/$1');
+    
+    // Search users
+    $routes->get('authors/search', 'AuthorController::search');
+});
+
+// cricket api for hindi flypped
+
+
+$routes->get('api/cricket/match-info', 'WorldcupController::apiGetMatchInfo');
+$routes->get('api/cricket/matches', 'WorldcupController::apiGetMatches');
+$routes->get('api/cricket/series-info', 'WorldcupController::apiGetSeriesInfo');
+$routes->get('api/cricket/upcoming-matches', 'WorldcupController::apiGetUpcomingMatches');
+$routes->get('api/cricket/todaymatches', 'WorldcupController::apiGetTodayMatches');
+$routes->get('api/cricket/scorecard', 'WorldcupController::apiGetMatchScorecard');
+
+
+
+
+// Blog Details (post-slug only, without category)
+$routes->get('([a-zA-Z0-9-]+)', 'BlogDetails::view/$1');
+
+// Blog Details with category (if you use this pattern)
+$routes->get('(:segment)/([a-zA-Z0-9-]+)', 'BlogDetails::viewWithCategory/$1/$2');
+
+// ========== CUSTOM 404 ERROR PAGE ==========
+// This will show your beautiful custom 404 page with categories
+$routes->get('error_page', 'ErrorController::error404');
+
+
