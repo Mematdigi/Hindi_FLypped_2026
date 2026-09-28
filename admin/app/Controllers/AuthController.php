@@ -134,38 +134,33 @@ class AuthController extends Controller
         return in_array($userRole, ['administrator', 'editor', 'author', 'seo_editor', 'seo_manager']);
     }
 
-    public function sendOtp()
+public function sendOtp()
     {
         $json = $this->request->getJSON(true);
-        if (!$json) return $this->response->setJSON(['success' => false, 'message' => 'Invalid format']);
-
         $mobile = trim($json['mobile'] ?? '');
-        $otp_type = 'login';
 
-        if (empty($mobile)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Mobile number required']);
+        if (empty($mobile) || strlen($mobile) < 10) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Valid mobile number required']);
         }
 
         $db = \Config\Database::connect();
-
-        // 1. Check if user exists and is active
-        $user = $db->table('mobile_user')->where('mobile', $mobile)->get()->getRowArray();
         
+        // Find user by mobile
+        $user = $db->table('mobile_user')->where('mobile', $mobile)->get()->getRowArray();
         if (!$user) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Account not found.']);
+            return $this->response->setJSON(['success' => false, 'message' => 'No account linked to this mobile number.']);
         }
         if (!$user['is_active']) {
             return $this->response->setJSON(['success' => false, 'message' => 'Account is inactive.']);
         }
 
-        // 2. Generate OTP and Expiry (10 minutes)
+        // Generate 6-digit OTP
         $otp_code = sprintf("%06d", mt_rand(100000, 999999));
         $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
-        // 3. Save or Update OTP in database
+        // Save OTP
         $existingOtp = $db->table('mobile_users_otp_verifications')
-                          ->where(['user_id' => $user['id'], 'otp_type' => $otp_type, 'is_verified' => 0])
-                          ->orderBy('created_at', 'DESC')
+                          ->where(['user_id' => $user['id'], 'otp_type' => 'login', 'is_verified' => 0])
                           ->get()->getRowArray();
 
         if ($existingOtp) {
@@ -177,20 +172,20 @@ class AuthController extends Controller
                 'user_id' => $user['id'],
                 'mobile' => $mobile,
                 'otp_code' => $otp_code,
-                'otp_type' => $otp_type,
+                'otp_type' => 'login',
                 'is_verified' => 0,
                 'expires_at' => $expires_at,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         }
 
-        // 4. Send SMS (Call your Twilio/SMS helper here)
+        // TODO: Call your Twilio/SMS helper here
         // $this->sendOtpViaTwilio($mobile, $otp_code);
 
         return $this->response->setJSON([
             'success' => true, 
             'message' => 'OTP sent successfully',
-            'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null // Only visible in dev mode
+            'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null
         ]);
     }
 
@@ -200,13 +195,9 @@ class AuthController extends Controller
         $mobile = trim($json['mobile'] ?? '');
         $otp_code = trim($json['otp_code'] ?? '');
 
-        if (empty($mobile) || empty($otp_code)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Mobile and OTP required']);
-        }
-
         $db = \Config\Database::connect();
-        
         $user = $db->table('mobile_user')->where('mobile', $mobile)->get()->getRowArray();
+        
         if (!$user) return $this->response->setJSON(['success' => false, 'message' => 'User not found']);
 
         $otpRecord = $db->table('mobile_users_otp_verifications')
@@ -214,10 +205,8 @@ class AuthController extends Controller
                         ->orderBy('created_at', 'DESC')
                         ->get()->getRowArray();
 
-        if (!$otpRecord) {
-            return $this->response->setJSON(['success' => false, 'message' => 'No valid OTP found']);
-        }
-
+        if (!$otpRecord) return $this->response->setJSON(['success' => false, 'message' => 'No valid OTP found']);
+        
         if (strtotime($otpRecord['expires_at']) < time()) {
             $db->table('mobile_users_otp_verifications')->where('id', $otpRecord['id'])->update(['is_verified' => 2]);
             return $this->response->setJSON(['success' => false, 'message' => 'OTP has expired']);
@@ -227,21 +216,12 @@ class AuthController extends Controller
             return $this->response->setJSON(['success' => false, 'message' => 'Invalid OTP code']);
         }
 
-        // OTP Validated: Update DB
-        $db->table('mobile_users_otp_verifications')->where('id', $otpRecord['id'])->update(['is_verified' => 1, 'verified_at' => date('Y-m-d H:i:s')]);
-        $db->table('mobile_user')->where('id', $user['id'])->update(['last_login' => date('Y-m-d H:i:s')]);
+        // OTP Validated: Mark as verified
+        $db->table('mobile_users_otp_verifications')
+           ->where('id', $otpRecord['id'])
+           ->update(['is_verified' => 1, 'verified_at' => date('Y-m-d H:i:s')]);
 
-        // CREATE ADMIN SESSION
-        session()->set([
-            'isLoggedIn' => true,
-            'user_id'    => $user['id'],
-            'first_name' => $user['first_name'],
-            'email'      => $user['email'] ?? $mobile,
-            'role'       => 'admin' // Adjust role based on your system
-        ]);
-
-        return $this->response->setJSON(['success' => true, 'message' => 'Login successful']);
+        return $this->response->setJSON(['success' => true, 'message' => 'OTP verified']);
     }
-
 
 }
