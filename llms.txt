@@ -4,6 +4,7 @@ Website: https://flyppedhindi.com/
 
 ## News
 
+- [LPU Student Protest: क्यों भड़के छात्र और क्लास सस्पेंड करने की नौबत क्यों आई?](https://flyppedhindi.com/news/lpu-student-protest)
 - [Bank Strike Postponed: 28 से 30 सितंबर की बैंक हड़ताल टली, जानें पूरा अपडेट](https://flyppedhindi.com/news/bank-strike-postponed)
 - [Rahul Gandhi Gyanesh Kumar: राहुल गांधी ने ज्ञानेश कुमार को क्यों कहा ‘देशद्रोही’?](https://flyppedhindi.com/news/rahul-gandhi-gyanesh-kumar)
 - [IIT Bombay CCTV Footage: परीक्षा हॉल में साहिल वाकोडे के साथ क्या हुआ?](https://flyppedhindi.com/news/iit-bombay-cctv-footage)
@@ -28,7 +29,6 @@ Website: https://flyppedhindi.com/
 - [BRICS Summit 2026 India: नई दिल्ली सम्मेलन में भारत ने क्या हासिल किया? जानें 5 बड़े फैसले](https://flyppedhindi.com/news/brics-summit-2026-india)
 - [Putin to Visit India for BRICS Summit: मोदी-पुतिन की बैठक, फाइटर जेट समेत इन मुद्दों पर होगी चर्चा](https://flyppedhindi.com/news/putin-to-visit-india-for-brics-summit)
 - [Dhirendra Shastri Non-Veg Controversy: बंगाल में मांस-मछली को लेकर क्यों छिड़ी बहस?](https://flyppedhindi.com/news/dhirendra-shastri-non-veg-controversy)
-- [Satya Niketan Building Collapse: हादसे में बड़ा एक्शन, मालिक हरिराम के बाद पत्नी और बेटा भी गिरफ्तार](https://flyppedhindi.com/news/satya-niketan-building-collapse)
 
 ## Entertainment
 
@@ -92,6 +92,7 @@ Website: https://flyppedhindi.com/
 
 ## Business
 
+- [Kalpataru Projects UAE Order: कंपनी को मिला 4,000 करोड़ रूपये से अधिक का गैस पाइपलाइन प्रोजेक्ट](https://flyppedhindi.com/business/kalpataru-projects-uae-order)
 - [Cloud Kitchen Business Ideas - कैसे शुरू करें, खर्च और जरूरी जानकारी](https://flyppedhindi.com/business/cloud-kitchen-business-ideas)
 - [Best Franchise Business in India: कम निवेश में अपना बिजनेस कैसे शुरू करें?](https://flyppedhindi.com/business/best-franchise-business-in-india)
 - [EPFO Wage Limit Increase: क्या अब 25 हजार तक सैलरी पर PF कटेगा?](https://flyppedhindi.com/business/epfo-wage-limit-increase)
@@ -116,7 +117,6 @@ Website: https://flyppedhindi.com/
 - [10 Food Business Ideas for College Students: पढ़ाई के साथ शुरू करें कमाई](https://flyppedhindi.com/business/10-food-business-ideas-for-college-students)
 - [GST for Health Insurance: क्या हेल्थ इंश्योरेंस प्रीमियम पर टैक्स देना है जरूरी? जानें नियम](https://flyppedhindi.com/business/gst-for-health-insurance-premium-in-india)
 - [फूड बिजनेस के लिए GST Registration Fees कितनी है? जानें नियम](https://flyppedhindi.com/business/gst-registration-fee)
-- [Zero Investment Business Ideas: गृहिणी घर से शुरू कर सकती हैं ये 7 बिजनेस](https://flyppedhindi.com/business/zero-investment-business-ideas)
 
 ## Health-Fitness
 
@@ -204,6 +204,7 @@ Website: https://flyppedhindi.com/
 
 ## Education
 
+- [Best Online Learning Platforms: भारत के टॉप लर्निंग प्लेटफ़ॉर्म, जो बदलेंगे आपका भविष्य](https://flyppedhindi.com/education/best-online-learning-platforms)
 - [NEET PG Results 2026 OUT: रिजल्ट कैसे चेक करें और स्कोरकार्ड कब मिलेगा?](https://flyppedhindi.com/education/neet-pg-results-2026-out)
 - [SSC CPO 2026 Exam Date: नोटिफिकेशन जारी! जानिए कब होगी परीक्षा और कैसे भरें फॉर्म?](https://flyppedhindi.com/education/ssc-cpo-2026-exam-date)
 - [Top Medical Colleges in India: सरकारी या प्राइवेट! एमबीबीएस के लिए कौन सा कॉलेज है बेस्ट?](https://flyppedhindi.com/education/top-medical-colleges-in-india)
@@ -228,7 +229,6 @@ Website: https://flyppedhindi.com/
 - [Best AI Tools for Students in Hindi: पढ़ाई को 10 गुना आसान बनाने वाले टॉप एआई टूल्स](https://flyppedhindi.com/education/best-ai-tools-for-students-in-hindi)
 - [Deep Work in Hindi: क्या है डीप वर्क और इसके 4 नियम?](https://flyppedhindi.com/education/deep-work-in-hindi)
 - [Career Options in Hindi: पढ़ाई के बाद सही करियर कैसे चुनें?](https://flyppedhindi.com/education/career-options-in-hindi)
-- [Exam Preparation in Hindi: परीक्षा की तैयारी के बेस्ट टिप्स](https://flyppedhindi.com/education/exam-preparation-in-hindi)
 
 ## Relationship
 
