@@ -145,22 +145,19 @@ public function sendOtp()
 
         $db = \Config\Database::connect();
         
-        // Find user by mobile
-        $user = $db->table('mobile_user')->where('mobile', $mobile)->get()->getRowArray();
+        // 1. Find user in wp_users
+        $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
         if (!$user) {
             return $this->response->setJSON(['success' => false, 'message' => 'No account linked to this mobile number.']);
         }
-        if (!$user['is_active']) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Account is inactive.']);
-        }
 
-        // Generate 6-digit OTP
+        // 2. Generate OTP
         $otp_code = sprintf("%06d", mt_rand(100000, 999999));
         $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
-        // Save OTP
+        // 3. Save OTP in the new separate table
         $existingOtp = $db->table('mobile_users_otp_verifications')
-                          ->where(['user_id' => $user['id'], 'otp_type' => 'login', 'is_verified' => 0])
+                          ->where(['user_id' => $user['ID'], 'otp_type' => 'login', 'is_verified' => 0])
                           ->get()->getRowArray();
 
         if ($existingOtp) {
@@ -169,7 +166,7 @@ public function sendOtp()
                ->update(['otp_code' => $otp_code, 'expires_at' => $expires_at, 'created_at' => date('Y-m-d H:i:s')]);
         } else {
             $db->table('mobile_users_otp_verifications')->insert([
-                'user_id' => $user['id'],
+                'user_id' => $user['ID'], // Note: wp_users uses uppercase ID
                 'mobile' => $mobile,
                 'otp_code' => $otp_code,
                 'otp_type' => 'login',
@@ -196,12 +193,14 @@ public function sendOtp()
         $otp_code = trim($json['otp_code'] ?? '');
 
         $db = \Config\Database::connect();
-        $user = $db->table('mobile_user')->where('mobile', $mobile)->get()->getRowArray();
         
+        // 1. Verify user exists
+        $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
         if (!$user) return $this->response->setJSON(['success' => false, 'message' => 'User not found']);
 
+        // 2. Look up the OTP in the separate table
         $otpRecord = $db->table('mobile_users_otp_verifications')
-                        ->where(['user_id' => $user['id'], 'otp_type' => 'login', 'is_verified' => 0])
+                        ->where(['user_id' => $user['ID'], 'otp_type' => 'login', 'is_verified' => 0])
                         ->orderBy('created_at', 'DESC')
                         ->get()->getRowArray();
 
@@ -216,12 +215,11 @@ public function sendOtp()
             return $this->response->setJSON(['success' => false, 'message' => 'Invalid OTP code']);
         }
 
-        // OTP Validated: Mark as verified
+        // 3. OTP Validated: Mark as verified
         $db->table('mobile_users_otp_verifications')
            ->where('id', $otpRecord['id'])
            ->update(['is_verified' => 1, 'verified_at' => date('Y-m-d H:i:s')]);
 
         return $this->response->setJSON(['success' => true, 'message' => 'OTP verified']);
     }
-
 }
