@@ -195,3 +195,6 @@ $routes->get('google-news-sitemap.xml', function() {
     throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
 });
+
+$routes->post('login/send-otp', 'AuthController::sendOtp');
+$routes->post('login/verify-otp', 'AuthController::verifyOtp');
