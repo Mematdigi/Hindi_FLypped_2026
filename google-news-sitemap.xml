@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
+        <loc>https://flyppedhindi.com/lpu-student-protest</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Flypped Hindi News</news:name>
+                <news:language>hi</news:language>
+            </news:publication>
+            <news:publication_date>2026-09-28T17:14:00+05:30</news:publication_date>
+            <news:title>LPU Student Protest: क्यों भड़के छात्र और क्लास सस्पेंड करने की नौबत क्यों आई?</news:title>
+        </news:news>
+    </url>
+    <url>
         <loc>https://flyppedhindi.com/bank-strike-postponed</loc>
         <news:news>
             <news:publication>
