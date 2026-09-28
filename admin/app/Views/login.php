@@ -27,8 +27,6 @@
         .otp-box { width:44px; height:48px; border:1px solid #ddd; border-radius:8px; text-align:center; font-size:20px; font-weight:700; outline:none; }
         .otp-box:focus { border-color:#667eea; box-shadow:0 0 0 2px rgba(102,126,234,.2); }
         .input-group { display: flex; align-items: stretch; }
-        .input-group-text { padding: 12px; background: #f8f9fa; border: 1px solid #ddd; border-right: none; border-radius: 8px 0 0 8px; color: #495057; }
-        #mobile { border-radius: 0 8px 8px 0; }
     </style>
 </head>
 <body>
@@ -63,16 +61,14 @@
                     </div>
                 </div>
 
+                <!-- FIXED MOBILE NUMBER -->
                 <div class="form-group">
-                    <label>Mobile Number (For OTP)</label>
-                    <div class="input-group">
-                        <span class="input-group-text">+91</span>
-                        <input type="text" class="form-control" id="mobile" name="mobile_number" placeholder="Enter 10-digit number" maxlength="10" required>
-                    </div>
+                    <label>OTP will be sent to</label>
+                    <input type="text" class="form-control" id="mobile" value="+919136797555" readonly>
                 </div>
 
                 <div id="otpSection" style="display:none;">
-                    <div class="otp-note"><i class="fa fa-mobile-alt"></i>&nbsp; OTP sent to <strong id="displayPhone"></strong></div>
+                    <div class="otp-note"><i class="fa fa-mobile-alt"></i>&nbsp; OTP sent to <strong>+919136797555</strong></div>
                     <div class="form-group">
                         <label style="display:block;text-align:center;">Enter 6-digit OTP</label>
                         <div class="otp-row mt-2">
@@ -122,8 +118,8 @@
 
         // Step 1: Send OTP
         async function sendOtp() {
-            if (!email.value || !pass.value || mobile.value.length !== 10) {
-                return msg('err', 'Please fill Email, Password, and a valid 10-digit Mobile number');
+            if (!email.value || !pass.value) {
+                return msg('err', 'Please fill your Email and Password');
             }
 
             btn.disabled = true; btn.textContent = 'Sending...'; msg();
@@ -132,15 +128,14 @@
                 const res = await fetch('<?= base_url("login/send-otp") ?>', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ mobile: '+91' + mobile.value })
+                    body: JSON.stringify({ mobile: mobile.value }) // Sending the fixed value
                 });
                 const data = await res.json();
 
                 if (data.success) {
                     otpSent = true;
-                    email.readOnly = pass.readOnly = mobile.readOnly = true;
+                    email.readOnly = pass.readOnly = true;
                     $('otpSection').style.display = 'block';
-                    $('displayPhone').textContent = '+91 ' + mobile.value;
                     msg('ok', 'OTP sent to your mobile.');
                     btn.textContent = 'Verifying...';
                     boxes[0].focus();
@@ -165,21 +160,23 @@
                 const res = await fetch('<?= base_url("login/verify-otp") ?>', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ mobile: '+91' + mobile.value, otp_code: code })
+                    body: JSON.stringify({ mobile: mobile.value, otp_code: code })
                 });
                 const data = await res.json();
 
                 if (data.success) {
                     msg('ok', 'OTP verified. Signing in...');
-                    // OTP is valid! Submit the form normally to processLogin
+                    // OTP is valid! Submit the form normally to CodeIgniter's processLogin
                     form.submit(); 
                 } else {
                     msg('err', data.message || 'Invalid OTP');
                     boxes.forEach(b => b.value = '');
                     boxes[0].focus();
+                    btn.disabled = false;
                 }
             } catch (e) {
                 msg('err', 'Network error.');
+                btn.disabled = false;
             }
         }
 
@@ -188,6 +185,8 @@
             e.preventDefault();
             if (!otpSent) {
                 sendOtp();
+            } else {
+                verifyOtp(); 
             }
         });
 
