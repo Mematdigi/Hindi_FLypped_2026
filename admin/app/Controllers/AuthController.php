@@ -277,38 +277,60 @@ class AuthController extends Controller
      * TWILIO SMS HELPER
      * Copy the exact Twilio credentials from your English Flypped code here.
      */
-    private function sendOtpViaTwilio($mobile, $otp_code)
-    {
-        // --- PASTE YOUR ENGLISH TWILIO CREDENTIALS HERE ---
-        $sid    = getenv('TWILIO_SID') ?: 'PASTE_YOUR_SID_HERE';
-        $token  = getenv('TWILIO_TOKEN') ?: 'PASTE_YOUR_TOKEN_HERE';
-        $from   = getenv('TWILIO_FROM') ?: 'PASTE_YOUR_TWILIO_NUMBER_HERE';
-        // --------------------------------------------------
-
-        $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
-        $message = "Your Flypped Admin OTP is {$otp_code}. It is valid for 10 minutes.";
-
+    /**
+     * SMS HELPER (Fortius API)
+     */
+    private function sendOtpViaTwilio(string $mobile, string $otp_code): array
+       {
         try {
-            $client = \Config\Services::curlrequest();
-            $response = $client->post($url, [
-                'auth'        => [$sid, $token],
-                'form_params' => [
-                    'To'   => $mobile,
-                    'From' => $from,
-                    'Body' => $message,
-                ],
-                'http_errors' => false
+            // Remove the '+' for the Fortius API
+            $numberForApi = ltrim($mobile, '+');
+
+            // Message must match your DLT approved template exactly
+            $message = "Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
+
+            $params = http_build_query([
+                'apikey'     => '1g83GZppCdSWjC9m',
+                'senderid'   => 'FLYPD',
+                'templateid' => '1707177427617243925',
+                'number'     => $numberForApi,
+                'message'    => $message,
             ]);
 
-            $statusCode = $response->getStatusCode();
-            if ($statusCode >= 200 && $statusCode < 300) {
-                return ['success' => true];
-            } else {
-                $errorData = json_decode($response->getBody(), true);
-                return ['success' => false, 'error' => $errorData['message'] ?? 'Unknown Twilio error'];
+            $url = 'http://135.181.19.87/Login/V2/apikey.php?' . $params;
+
+            log_message('info', "sendOtpViaTwilio: Sending OTP to {$numberForApi}");
+
+            $client   = \Config\Services::curlrequest();
+            $response = $client->get($url, [
+                'timeout'         => 10,
+                'connect_timeout' => 5,
+                'http_errors'     => false,
+            ]);
+
+            $statusCode   = $response->getStatusCode();
+            $responseBody = trim($response->getBody());
+
+            log_message('info', "sendOtpViaTwilio: Response [{$statusCode}] - {$responseBody}");
+
+            if ($statusCode === 200) {
+                return [
+                    'success'  => true,
+                    'response' => $responseBody,
+                ];
             }
+
+            return [
+                'success' => false,
+                'error'   => "SMS API returned HTTP {$statusCode}: {$responseBody}",
+            ];
+
         } catch (\Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
+            log_message('error', 'sendOtpViaTwilio: Exception - ' . $e->getMessage());
+            return [
+                'success' => false,
+                'error'   => $e->getMessage(),
+            ];
         }
     }
 }
