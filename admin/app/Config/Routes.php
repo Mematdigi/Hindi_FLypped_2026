@@ -26,7 +26,6 @@ $routes->get('logout', 'AuthController::logout');
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'authGuard']);
 
 // ===== BLOG POSTING ROUTES =====
-// ===== BLOG POSTING ROUTES =====
 $routes->group('', ['filter' => 'authGuard'], function($routes) {
     $routes->get('add_post', 'Home::index');
     $routes->post('save_post', 'Home::savePost');
