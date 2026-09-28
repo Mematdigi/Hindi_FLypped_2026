@@ -60,6 +60,7 @@ Website: https://flyppedhindi.com/
 
 ## Sports
 
+- [South Africa vs Australia 2nd ODI Highlights: अफ्रीका ने ऑस्ट्रेलिया को 32 रनों से हराकर जीती सीरीज](https://flyppedhindi.com/sports/south-africa-vs-australia-2nd-odi-highlights)
 - [Virat Kohli Fastest 15000 ODI Runs: 55वें शतक के साथ दर्ज किया यह खास रिकॉर्ड?](https://flyppedhindi.com/sports/virat-kohli-fastest-15000-odi-runs)
 - [IND vs WI 1st ODI Preview: क्या वेस्टइंडीज देगा भारत को टक्कर?](https://flyppedhindi.com/sports/ind-vs-wi-1st-odi-preview)
 - [Portugal vs Wales Match Highlights: पुर्तगाल ने वेल्स को 1-0 से हराया](https://flyppedhindi.com/sports/portugal-vs-wales-match-highlights)
@@ -84,7 +85,6 @@ Website: https://flyppedhindi.com/
 - [India Refuses Trophy from Mohsin Naqvi: भारत ने एशिया कप ट्रॉफी लेने से क्यों किया इनकार?](https://flyppedhindi.com/sports/india-refuses-trophy-from-mohsin-naqvi)
 - [IND vs AFG 2nd T20 Match Preview: क्या सीरीज में वापसी कर पाएगा अफगानिस्तान?](https://flyppedhindi.com/sports/ind-vs-afg-2nd-t20-match-preview)
 - [BCCI 130 Crore Deal - BCCI की Campa, SBI Life और ChatGPT से बड़ी डील!](https://flyppedhindi.com/sports/bcci-130-crore-deal)
-- [IND W vs BAN W Semi Final: कौन खेलेगा एशिया कप 2026 का फाइनल?](https://flyppedhindi.com/sports/ind-w-vs-ban-w-semi-final)
 
 ## Tech
 
