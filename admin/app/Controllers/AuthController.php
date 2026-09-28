@@ -133,61 +133,96 @@ class AuthController extends Controller
         $userRole = session()->get('user_role');
         return in_array($userRole, ['administrator', 'editor', 'author', 'seo_editor', 'seo_manager']);
     }
-public function sendOtp()
+
+    public function sendOtp()
     {
-        $json = $this->request->getJSON(true);
-        $mobile = trim($json['mobile'] ?? '');
+        try {
+            $json = $this->request->getJSON(true);
 
-        if (empty($mobile) || strlen($mobile) < 10) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Valid mobile number required']);
-        }
+            if (!$json) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Invalid JSON format']);
+            }
 
-        $db = \Config\Database::connect();
-        
-        // 1. Find user in wp_users
-        $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
-        
-        if (!$user) {
-            return $this->response->setJSON(['success' => false, 'message' => 'No account linked to this mobile number.']);
-        }
+            $mobile = trim($json['mobile'] ?? '');
+            
+            // Validate mobile (E.164 format: +[country code][number])
+            if (empty($mobile) || !preg_match('/^\+[1-9]\d{9,14}$/', $mobile)) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Valid mobile number required (e.g., +919136797555)']);
+            }
 
-        // 2. Generate OTP
-        $otp_code = sprintf("%06d", mt_rand(100000, 999999));
-        $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+            $db = \Config\Database::connect();
+            
+            // Check rate limiting (prevent spam - max 2 requests per 2 mins)
+            $recentOtpQuery = $db->query("
+                SELECT COUNT(*) as count
+                FROM mobile_users_otp_verifications
+                WHERE mobile = ?
+                AND created_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE)
+            ", [$mobile]);
 
-        // 3. Save OTP in the separate verifications table
-        $existingOtp = $db->table('mobile_users_otp_verifications')
-                          ->where(['user_id' => $user['ID'], 'otp_type' => 'login', 'is_verified' => 0])
-                          ->get()->getRowArray();
+            $recentCount = (int)($recentOtpQuery->getRowArray()['count'] ?? 0);
 
-        if ($existingOtp) {
-            $db->table('mobile_users_otp_verifications')
-               ->where('id', $existingOtp['id'])
-               ->update([
-                   'otp_code' => $otp_code, 
-                   'expires_at' => $expires_at, 
-                   'created_at' => date('Y-m-d H:i:s')
-               ]);
-        } else {
-            $db->table('mobile_users_otp_verifications')->insert([
-                'user_id' => $user['ID'], // WordPress primary key is uppercase 'ID'
-                'mobile' => $mobile,
-                'otp_code' => $otp_code,
-                'otp_type' => 'login',
-                'is_verified' => 0,
-                'expires_at' => $expires_at,
-                'created_at' => date('Y-m-d H:i:s')
+            if ($recentCount >= 2) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Too many OTP requests. Please wait 2 minutes.']);
+            }
+
+            // 1. Find user in wp_users table
+            $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
+            
+            if (!$user) {
+                return $this->response->setJSON(['success' => false, 'message' => 'No account linked to this mobile number.']);
+            }
+
+            // 2. Generate 6-digit OTP
+            $otp_code = sprintf("%06d", mt_rand(100000, 999999));
+            $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+            // 3. Save OTP in the separate verifications table
+            $existingOtp = $db->table('mobile_users_otp_verifications')
+                              ->where(['user_id' => $user['ID'], 'otp_type' => 'login', 'is_verified' => 0])
+                              ->get()->getRowArray();
+
+            if ($existingOtp) {
+                $db->table('mobile_users_otp_verifications')
+                   ->where('id', $existingOtp['id'])
+                   ->update([
+                       'otp_code' => $otp_code, 
+                       'expires_at' => $expires_at, 
+                       'created_at' => date('Y-m-d H:i:s')
+                   ]);
+            } else {
+                $db->table('mobile_users_otp_verifications')->insert([
+                    'user_id' => $user['ID'], 
+                    'mobile' => $mobile,
+                    'otp_code' => $otp_code,
+                    'otp_type' => 'login',
+                    'is_verified' => 0,
+                    'expires_at' => $expires_at,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // 4. Send OTP via Twilio SMS
+            $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
+
+            if (!$smsResult['success']) {
+                log_message('error', "Failed to send SMS to {$mobile} - " . $smsResult['error']);
+                return $this->response->setJSON([
+                    'success' => false, 
+                    'message' => 'Failed to send SMS. Please contact support.'
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'success' => true, 
+                'message' => 'OTP sent successfully to your mobile',
+                'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null
             ]);
+
+        } catch (\Exception $e) {
+            log_message('critical', 'sendOtp: Unexpected exception - ' . $e->getMessage());
+            return $this->response->setJSON(['success' => false, 'message' => 'An unexpected error occurred']);
         }
-
-        // TODO: Call your Twilio/SMS helper here to actually send the text message
-        // $this->sendOtpViaTwilio($mobile, $otp_code);
-
-        return $this->response->setJSON([
-            'success' => true, 
-            'message' => 'OTP sent successfully',
-            'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null
-        ]);
     }
 
     public function verifyOtp()
@@ -202,14 +237,12 @@ public function sendOtp()
 
         $db = \Config\Database::connect();
         
-        // 1. Verify user exists in wp_users
         $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
         
         if (!$user) {
             return $this->response->setJSON(['success' => false, 'message' => 'User not found']);
         }
 
-        // 2. Look up the OTP in the separate table
         $otpRecord = $db->table('mobile_users_otp_verifications')
                         ->where(['user_id' => $user['ID'], 'otp_type' => 'login', 'is_verified' => 0])
                         ->orderBy('created_at', 'DESC')
@@ -228,16 +261,54 @@ public function sendOtp()
             return $this->response->setJSON(['success' => false, 'message' => 'Invalid OTP code']);
         }
 
-        // 3. OTP Validated: Mark as verified in OTP table
+        // OTP Validated
         $db->table('mobile_users_otp_verifications')
            ->where('id', $otpRecord['id'])
            ->update(['is_verified' => 1, 'verified_at' => date('Y-m-d H:i:s')]);
            
-        // 4. Update the last_login column we just created in wp_users
         $db->table('wp_users')
            ->where('ID', $user['ID'])
            ->update(['last_login' => date('Y-m-d H:i:s')]);
 
         return $this->response->setJSON(['success' => true, 'message' => 'OTP verified']);
+    }
+
+    /**
+     * TWILIO SMS HELPER
+     * Copy the exact Twilio credentials from your English Flypped code here.
+     */
+    private function sendOtpViaTwilio($mobile, $otp_code)
+    {
+        // --- PASTE YOUR ENGLISH TWILIO CREDENTIALS HERE ---
+        $sid    = getenv('TWILIO_SID') ?: 'PASTE_YOUR_SID_HERE';
+        $token  = getenv('TWILIO_TOKEN') ?: 'PASTE_YOUR_TOKEN_HERE';
+        $from   = getenv('TWILIO_FROM') ?: 'PASTE_YOUR_TWILIO_NUMBER_HERE';
+        // --------------------------------------------------
+
+        $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
+        $message = "Your Flypped Admin OTP is {$otp_code}. It is valid for 10 minutes.";
+
+        try {
+            $client = \Config\Services::curlrequest();
+            $response = $client->post($url, [
+                'auth'        => [$sid, $token],
+                'form_params' => [
+                    'To'   => $mobile,
+                    'From' => $from,
+                    'Body' => $message,
+                ],
+                'http_errors' => false
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 300) {
+                return ['success' => true];
+            } else {
+                $errorData = json_decode($response->getBody(), true);
+                return ['success' => false, 'error' => $errorData['message'] ?? 'Unknown Twilio error'];
+            }
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
     }
 }
