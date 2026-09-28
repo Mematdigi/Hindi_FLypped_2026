@@ -287,7 +287,7 @@ class AuthController extends Controller
             $numberForApi = ltrim($mobile, '+');
 
             // Message must match your DLT approved template exactly
-            $message = "Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
+            $message = "Hindi Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
 
             $params = http_build_query([
                 'apikey'     => '1g83GZppCdSWjC9m',
