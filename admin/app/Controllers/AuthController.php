@@ -280,29 +280,28 @@ class AuthController extends Controller
     /**
      * SMS HELPER (Fortius API)
      */
-    private function sendOtpViaTwilio(string $mobile, string $otp_code): array
-       {
+     private function sendOtpViaTwilio(string $mobile, string $otp_code): array
+    {
         try {
-            // Remove the '+' for the Fortius API
-            $numberForApi = ltrim($mobile, '+');
+            // Your Twilio Credentials
+            $sid    = getenv('TWILIO_SID');
+            $token  = getenv('TWILIO_TOKEN');
+            $from   = getenv('TWILIO_FROM');
+            // Note: Keep the '+' sign for Twilio, so we use $mobile directly
+            $message = " Hindi Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
 
-            // Message must match your DLT approved template exactly
-            $message = "Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
+            $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
 
-            $params = http_build_query([
-                'apikey'     => '1g83GZppCdSWjC9m',
-                'senderid'   => 'FLYPD',
-                'templateid' => '1707177427617243925',
-                'number'     => $numberForApi,
-                'message'    => $message,
-            ]);
+            log_message('info', "sendOtpViaTwilio: Sending OTP to {$mobile}");
 
-            $url = 'http://135.181.19.87/Login/V2/apikey.php?' . $params;
-
-            log_message('info', "sendOtpViaTwilio: Sending OTP to {$numberForApi}");
-
-            $client   = \Config\Services::curlrequest();
-            $response = $client->get($url, [
+            $client = \Config\Services::curlrequest();
+            $response = $client->post($url, [
+                'auth'        => [$sid, $token], // Twilio uses Basic Auth
+                'form_params' => [
+                    'To'   => $mobile,
+                    'From' => $from,
+                    'Body' => $message,
+                ],
                 'timeout'         => 10,
                 'connect_timeout' => 5,
                 'http_errors'     => false,
@@ -313,7 +312,8 @@ class AuthController extends Controller
 
             log_message('info', "sendOtpViaTwilio: Response [{$statusCode}] - {$responseBody}");
 
-            if ($statusCode === 200) {
+            // Twilio returns 201 Created on success
+            if ($statusCode >= 200 && $statusCode < 300) {
                 return [
                     'success'  => true,
                     'response' => $responseBody,
@@ -322,7 +322,7 @@ class AuthController extends Controller
 
             return [
                 'success' => false,
-                'error'   => "SMS API returned HTTP {$statusCode}: {$responseBody}",
+                'error'   => "Twilio API returned HTTP {$statusCode}: {$responseBody}",
             ];
 
         } catch (\Exception $e) {
