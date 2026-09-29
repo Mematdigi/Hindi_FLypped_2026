@@ -205,13 +205,18 @@ class AuthController extends Controller
             // 4. Send OTP via Twilio SMS
             $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
 
-            // if (!$smsResult['success']) {
-            //     log_message('error', "Failed to send SMS to {$mobile} - " . $smsResult['error']);
-            //     return $this->response->setJSON([
-            //         'success' => false, 
-            //         'message' => 'Failed to send SMS. Please contact support.'
-            //     ]);
-            // }
+            // 4. Send OTP via Twilio SMS
+            $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
+
+            if (!$smsResult['success']) {
+                log_message('error', "Failed to send SMS to {$mobile} - " . $smsResult['error']);
+                
+                return $this->response->setJSON([
+                    'success' => false, 
+                    // This will now show the exact Twilio error on your frontend
+                    'message' => $smsResult['error'] 
+                ]);
+            }
 
             return $this->response->setJSON([
                 'success' => true, 
