@@ -162,9 +162,9 @@ class AuthController extends Controller
 
             $recentCount = (int)($recentOtpQuery->getRowArray()['count'] ?? 0);
 
-            if ($recentCount >= 2) {
-                return $this->response->setJSON(['success' => false, 'message' => 'Too many OTP requests. Please wait 2 minutes.']);
-            }
+            // if ($recentCount >= 2) {
+            //     return $this->response->setJSON(['success' => false, 'message' => 'Too many OTP requests. Please wait 2 minutes.']);
+            // }
 
             // 1. Find user in wp_users table
             $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
