@@ -134,6 +134,20 @@ class AuthController extends Controller
         return in_array($userRole, ['administrator', 'editor', 'author', 'seo_editor', 'seo_manager']);
     }
 
+    // Find the user by email (preferred) or by mobile (fallback for older login page)
+    private function findOtpUser($db, string $email, string $mobile): ?array
+    {
+        if ($email !== '') {
+            return $db->table('wp_users')->where('user_email', $email)->get()->getRowArray();
+        }
+
+        if ($mobile !== '') {
+            return $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
+        }
+
+        return null;
+    }
+
     public function sendOtp()
     {
         try {
@@ -143,35 +157,42 @@ class AuthController extends Controller
                 return $this->response->setJSON(['success' => false, 'message' => 'Invalid JSON format']);
             }
 
+            $email  = trim($json['email'] ?? '');
             $mobile = trim($json['mobile'] ?? '');
-            
-            // Validate mobile (E.164 format: +[country code][number])
-            if (empty($mobile) || !preg_match('/^\+[1-9]\d{9,14}$/', $mobile)) {
-                return $this->response->setJSON(['success' => false, 'message' => 'Valid mobile number required (e.g., +919136797555)']);
+
+            if ($email === '' && $mobile === '') {
+                return $this->response->setJSON(['success' => false, 'message' => 'Email address required']);
+            }
+
+            if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Valid email address required']);
             }
 
             $db = \Config\Database::connect();
-            
+
+            // 1. Find user in wp_users table (by email, or by mobile as fallback)
+            $user = $this->findOtpUser($db, $email, $mobile);
+
+            if (!$user) {
+                return $this->response->setJSON(['success' => false, 'message' => 'No account found for this email.']);
+            }
+
+            $email  = $user['user_email'];
+            $mobile = $user['mobile'] ?? '';
+
             // Check rate limiting (prevent spam - max 2 requests per 2 mins)
             $recentOtpQuery = $db->query("
                 SELECT COUNT(*) as count
                 FROM mobile_users_otp_verifications
-                WHERE mobile = ?
+                WHERE user_id = ?
                 AND created_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE)
-            ", [$mobile]);
+            ", [$user['ID']]);
 
             $recentCount = (int)($recentOtpQuery->getRowArray()['count'] ?? 0);
 
             // if ($recentCount >= 2) {
             //     return $this->response->setJSON(['success' => false, 'message' => 'Too many OTP requests. Please wait 2 minutes.']);
             // }
-
-            // 1. Find user in wp_users table
-            $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
-            
-            if (!$user) {
-                return $this->response->setJSON(['success' => false, 'message' => 'No account linked to this mobile number.']);
-            }
 
             // 2. Generate 6-digit OTP
             $otp_code = sprintf("%06d", mt_rand(100000, 999999));
@@ -201,8 +222,9 @@ class AuthController extends Controller
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
             }
-            
-          if (getenv('OTP_BYPASS') === 'true') {
+
+            // Temporary bypass: set OTP_BYPASS = true in .env to show OTP on screen
+            if (getenv('OTP_BYPASS') === 'true') {
                 log_message('warning', "OTP_BYPASS is ON - OTP returned in response for {$email}");
 
                 return $this->response->setJSON([
@@ -212,12 +234,11 @@ class AuthController extends Controller
                 ]);
             }
 
-            // 4. Send OTP via Twilio SMS
-$result = $this->sendOtpViaEmail($otp_code, $email);
-
+            // 4. Send OTP via email
+            $result = $this->sendOtpViaEmail($otp_code, $email);
 
             if (!$result['success']) {
-                log_message('error', "Failed to send SMS to {$mobile} - " . $result['error']);
+                log_message('error', "Failed to send OTP email for {$email} - " . $result['error']);
                 
                 return $this->response->setJSON([
                     'success' => false, 
@@ -231,7 +252,7 @@ $result = $this->sendOtpViaEmail($otp_code, $email);
                 'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null
             ]);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             log_message('critical', 'sendOtp: Unexpected exception - ' . $e->getMessage());
             return $this->response->setJSON(['success' => false, 'message' => 'An unexpected error occurred']);
         }
@@ -240,16 +261,17 @@ $result = $this->sendOtpViaEmail($otp_code, $email);
     public function verifyOtp()
     {
         $json = $this->request->getJSON(true);
+        $email = trim($json['email'] ?? '');
         $mobile = trim($json['mobile'] ?? '');
         $otp_code = trim($json['otp_code'] ?? '');
 
-        if (empty($mobile) || empty($otp_code)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Mobile and OTP required']);
+        if (($email === '' && $mobile === '') || $otp_code === '') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Email and OTP required']);
         }
 
         $db = \Config\Database::connect();
         
-        $user = $db->table('wp_users')->where('mobile', $mobile)->get()->getRowArray();
+        $user = $this->findOtpUser($db, $email, $mobile);
         
         if (!$user) {
             return $this->response->setJSON(['success' => false, 'message' => 'User not found']);
@@ -286,67 +308,6 @@ $result = $this->sendOtpViaEmail($otp_code, $email);
     }
 
     /**
-     * TWILIO SMS HELPER
-     * Copy the exact Twilio credentials from your English Flypped code here.
-     */
-    /**
-     * SMS HELPER (Fortius API)
-     */
-     private function sendOtpViaTwilio(string $mobile, string $otp_code): array
-    {
-        try {
-            // Your Twilio Credentials
-            $sid    = getenv('TWILIO_SID');
-            $token  = getenv('TWILIO_TOKEN');
-            $from   = getenv('TWILIO_FROM');
-            // Note: Keep the '+' sign for Twilio, so we use $mobile directly
-            $message = " Hindi Flypped OTP: {$otp_code} Valid for 10 minutes. Please do not share this code with anyone";
-
-            $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
-
-            log_message('info', "sendOtpViaTwilio: Sending OTP to {$mobile}");
-
-            $client = \Config\Services::curlrequest();
-            $response = $client->post($url, [
-                'auth'        => [$sid, $token], // Twilio uses Basic Auth
-                'form_params' => [
-                    'To'   => $mobile,
-                    'From' => $from,
-                    'Body' => $message,
-                ],
-                'timeout'         => 10,
-                'connect_timeout' => 5,
-                'http_errors'     => false,
-            ]);
-
-            $statusCode   = $response->getStatusCode();
-            $responseBody = trim($response->getBody());
-
-            log_message('info', "sendOtpViaTwilio: Response [{$statusCode}] - {$responseBody}");
-
-            // Twilio returns 201 Created on success
-            if ($statusCode >= 200 && $statusCode < 300) {
-                return [
-                    'success'  => true,
-                    'response' => $responseBody,
-                ];
-            }
-
-            return [
-                'success' => false,
-                'error'   => "Twilio API returned HTTP {$statusCode}: {$responseBody} ,message :{$message} ",
-            ];
-
-        } catch (\Exception $e) {
-            log_message('error', 'sendOtpViaTwilio: Exception - ' . $e->getMessage());
-            return [
-                'success' => false,
-                'error'   => $e->getMessage(),
-            ];
-        }
-    }
-
-        /**
      * EMAIL OTP HELPER
      * Sends every OTP to one fixed inbox (OTP_RECEIVER_EMAIL in .env).
      * $requestedBy is optional and only shown in the email for reference.
@@ -427,7 +388,7 @@ $result = $this->sendOtpViaEmail($otp_code, $email);
                 'error'   => 'Could not send OTP right now. Please try again later.',
             ];
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             log_message('error', 'sendOtpViaEmail: Exception - ' . $e->getMessage());
             return [
                 'success' => false,
