@@ -61,14 +61,11 @@
                     </div>
                 </div>
 
-                <!-- FIXED MOBILE NUMBER -->
-                <div class="form-group">
-                    <label>OTP will be sent to</label>
-                    <input type="text" class="form-control" id="mobile" value="+919136797555" readonly>
-                </div>
+                <!-- FIXED MOBILE NUMBER (hidden, used only to look up the OTP record) -->
+                <input type="hidden" id="mobile" value="+919136797555">
 
                 <div id="otpSection" style="display:none;">
-                    <div class="otp-note"><i class="fa fa-mobile-alt"></i>&nbsp; OTP sent to <strong>+919136797555</strong></div>
+                    <div class="otp-note" id="otpNote"><i class="fa fa-key"></i>&nbsp; Enter the OTP below</div>
                     <div class="form-group">
                         <label style="display:block;text-align:center;">Enter 6-digit OTP</label>
                         <div class="otp-row mt-2">
@@ -136,9 +133,20 @@
                     otpSent = true;
                     email.readOnly = pass.readOnly = true;
                     $('otpSection').style.display = 'block';
-                    msg('ok', 'OTP sent to your mobile.');
-                    btn.textContent = 'Verifying...';
-                    boxes[0].focus();
+
+                    // TEMPORARY: show and auto-fill the OTP returned by the server
+                    if (data.dev_otp) {
+                        const code = String(data.dev_otp);
+                        code.split('').forEach((c, j) => boxes[j] && (boxes[j].value = c));
+                        $('otpNote').innerHTML = '<i class="fa fa-key"></i>&nbsp; Your OTP is <strong>' + code + '</strong>';
+                        msg('ok', 'OTP filled in. Click "Verify & Sign in".');
+                        btn.disabled = false;
+                        btn.textContent = 'Verify & Sign in';
+                    } else {
+                        msg('ok', 'OTP sent.');
+                        btn.textContent = 'Verifying...';
+                        boxes[0].focus();
+                    }
                 } else {
                     msg('err', data.message || 'Failed to send OTP.');
                     btn.disabled = false; btn.textContent = 'Send OTP';
