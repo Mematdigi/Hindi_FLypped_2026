@@ -4,6 +4,7 @@ Website: https://flyppedhindi.com/
 
 ## News
 
+- [Delhi NCR New GRAP Rules: जहरीली हवा पर बड़ा एक्शन! क्या हैं ग्रैप के नए नियम?](https://flyppedhindi.com/news/delhi-ncr-new-grap-rules)
 - [Arunachal Pradesh Assam Rifles Attack: भारत-म्यांमार बॉर्डर पर अचानक हमला, एक जवान शहीद, 4 घायल](https://flyppedhindi.com/news/arunachal-pradesh-assam-rifles-attack)
 - [Rahul Gandhi NSUI DUSU Review Meeting: हार के बाद कन्हैया कुमार से टिकट बंटवारे पर सवाल](https://flyppedhindi.com/news/rahul-gandhi-nsui-dusu-review-meeting)
 - [LPU Student Protest: क्यों भड़के छात्र और क्लास सस्पेंड करने की नौबत क्यों आई?](https://flyppedhindi.com/news/lpu-student-protest)
@@ -28,7 +29,6 @@ Website: https://flyppedhindi.com/
 - [Kapil Sibal on PM Modi: कपिल सिब्बल ने मानी मोदी सरकार की उपलब्धि, BRICS पर कही बड़ी बात](https://flyppedhindi.com/news/kapil-sibal-on-pm-modi)
 - [BRICS Summit Dinner Menu Controversy: राहुल गांधी के 80% नॉन-वेज वाले बयान पर BJP का पलटवार](https://flyppedhindi.com/news/brics-summit-dinner-menu-controversy)
 - [Kedarnath Dham Route Accident: पत्थर गिरने से महिला श्रद्धालु की मौत, यात्रा को लेकर प्रशासन अलर्ट](https://flyppedhindi.com/news/kedarnath-dham-route-accident)
-- [BRICS Summit 2026 India: नई दिल्ली सम्मेलन में भारत ने क्या हासिल किया? जानें 5 बड़े फैसले](https://flyppedhindi.com/news/brics-summit-2026-india)
 
 ## Entertainment
 
@@ -60,6 +60,8 @@ Website: https://flyppedhindi.com/
 
 ## Sports
 
+- [Mohit Sharma CSK Bowling Coach: चेन्नई सुपर किंग्स में हुई पूर्व भारतीय गेंदबाज की वापसी](https://flyppedhindi.com/sports/mohit-sharma-csk-bowling-coach)
+- [India Wins 6th Gold in Asian Games 2026: महिला 4x400 मीटर रिले में गोल्ड, गुलवीर सिंह ने जीता ब्रॉन्ज](https://flyppedhindi.com/sports/india-wins-6th-gold-in-asian-games-2026)
 - [Australia vs South Africa 3rd ODI Preview - क्या ऑस्ट्रेलिया बचा पाएगा सीरीज का आखिरी मैच?](https://flyppedhindi.com/sports/australia-vs-south-africa-3rd-odi-preview)
 - [IND vs WI 2nd ODI Preview - क्या वेस्टइंडीज कर पाएगा सीरीज में वापसी?](https://flyppedhindi.com/sports/ind-vs-wi-2nd-odi-preview)
 - [South Africa vs Australia 2nd ODI Highlights: अफ्रीका ने ऑस्ट्रेलिया को 32 रनों से हराकर जीती सीरीज](https://flyppedhindi.com/sports/south-africa-vs-australia-2nd-odi-highlights)
@@ -83,8 +85,6 @@ Website: https://flyppedhindi.com/
 - [ENG vs SL 1st T20I: ब्रूक के शतक के बदौलत इंग्लैंड ने श्रीलंका को 119 रनों से हराया](https://flyppedhindi.com/sports/eng-vs-sl-1st-t20i)
 - [England vs Sri Lanka 1st T20 Match Preview: पहले मुकाबले में किसका पलड़ा भारी?](https://flyppedhindi.com/sports/england-vs-sri-lanka-1st-t20-match-preview)
 - [Dhiraj Bommadevara Gold Medal: धीरज बोम्मादेवरा ने रचा इतिहास](https://flyppedhindi.com/sports/dhiraj-bommadevara-gold-medal)
-- [Asian Champions Trophy 2026: कब भारत आएगी पाकिस्तान हॉकी टीम?](https://flyppedhindi.com/sports/asian-champions-trophy-2026)
-- [India Refuses Trophy from Mohsin Naqvi: भारत ने एशिया कप ट्रॉफी लेने से क्यों किया इनकार?](https://flyppedhindi.com/sports/india-refuses-trophy-from-mohsin-naqvi)
 
 ## Tech
 
