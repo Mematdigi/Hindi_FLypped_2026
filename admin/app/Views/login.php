@@ -61,11 +61,8 @@
                     </div>
                 </div>
 
-                <!-- FIXED MOBILE NUMBER (hidden, used only to look up the OTP record) -->
-                <input type="hidden" id="mobile" value="+919136797555">
-
                 <div id="otpSection" style="display:none;">
-                    <div class="otp-note" id="otpNote"><i class="fa fa-key"></i>&nbsp; Enter the OTP below</div>
+                    <div class="otp-note" id="otpNote"><i class="fa fa-envelope"></i>&nbsp; OTP sent to the <strong>registered admin email</strong></div>
                     <div class="form-group">
                         <label style="display:block;text-align:center;">Enter 6-digit OTP</label>
                         <div class="otp-row mt-2">
@@ -100,7 +97,7 @@
         });
 
         const $ = id => document.getElementById(id);
-        const form = $('loginForm'), email = $('email'), pass = $('password'), mobile = $('mobile'), btn = $('mainBtn');
+        const form = $('loginForm'), email = $('email'), pass = $('password'), btn = $('mainBtn');
         const boxes = Array.from(document.querySelectorAll('.otp-box'));
         let otpSent = false;
 
@@ -125,7 +122,7 @@
                 const res = await fetch('<?= base_url("login/send-otp") ?>', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ mobile: mobile.value }) // Sending the fixed value
+                    body: JSON.stringify({ email: email.value.trim() })
                 });
                 const data = await res.json();
 
@@ -134,16 +131,16 @@
                     email.readOnly = pass.readOnly = true;
                     $('otpSection').style.display = 'block';
 
-                    // TEMPORARY: show and auto-fill the OTP returned by the server
-                    if (data.dev_otp) {
-                        const code = String(data.dev_otp);
+                    // Only when OTP_BYPASS = true on the server: show and auto-fill the OTP
+                    if (data.otp) {
+                        const code = String(data.otp);
                         code.split('').forEach((c, j) => boxes[j] && (boxes[j].value = c));
-                        $('otpNote').innerHTML = '<i class="fa fa-key"></i>&nbsp; Your OTP is <strong>' + code + '</strong>';
+                        $('otpNote').innerHTML = '<i class="fa fa-key"></i>&nbsp; Test mode OTP: <strong>' + code + '</strong>';
                         msg('ok', 'OTP filled in. Click "Verify & Sign in".');
                         btn.disabled = false;
                         btn.textContent = 'Verify & Sign in';
                     } else {
-                        msg('ok', 'OTP sent.');
+                        msg('ok', 'OTP sent to the registered admin email.');
                         btn.textContent = 'Verifying...';
                         boxes[0].focus();
                     }
@@ -168,7 +165,7 @@
                 const res = await fetch('<?= base_url("login/verify-otp") ?>', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ mobile: mobile.value, otp_code: code })
+                    body: JSON.stringify({ email: email.value.trim(), otp_code: code })
                 });
                 const data = await res.json();
 
