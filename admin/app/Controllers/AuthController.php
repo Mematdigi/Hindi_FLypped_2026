@@ -325,7 +325,7 @@ class AuthController extends Controller
                 'error'   => "Twilio API returned HTTP {$statusCode}: {$responseBody}",
             ];
 
-        } catch (\Exception $e) {
+             } catch (\Exception $e) {
             log_message('error', 'sendOtpViaTwilio: Exception - ' . $e->getMessage());
             return [
                 'success' => false,
@@ -333,3 +333,4 @@ class AuthController extends Controller
             ];
         }
     }
+}
