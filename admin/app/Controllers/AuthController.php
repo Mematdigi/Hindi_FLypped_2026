@@ -201,25 +201,34 @@ class AuthController extends Controller
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
             }
+            
+          if (getenv('OTP_BYPASS') === 'true') {
+                log_message('warning', "OTP_BYPASS is ON - OTP returned in response for {$email}");
 
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => "TEST MODE - Your OTP is: {$otp_code}",
+                    'otp'     => $otp_code,
+                ]);
+            }
 
             // 4. Send OTP via Twilio SMS
-            $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
+$result = $this->sendOtpViaEmail($otp_code, $email);
 
-            if (!$smsResult['success']) {
-                log_message('error', "Failed to send SMS to {$mobile} - " . $smsResult['error']);
+
+            if (!$result['success']) {
+                log_message('error', "Failed to send SMS to {$mobile} - " . $result['error']);
                 
                 return $this->response->setJSON([
                     'success' => false, 
-                    // This will now show the exact Twilio error on your frontend
-                    'message' => $smsResult['error'] 
+                    'message' => $result['error'] 
                 ]);
             }
 
             return $this->response->setJSON([
                 'success' => true, 
-                'message' => 'OTP sent successfully to your mobile',
-                'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : $otp_code
+                'message' => 'OTP sent successfully to your email',
+                'dev_otp' => ENVIRONMENT === 'development' ? $otp_code : null
             ]);
 
         } catch (\Exception $e) {
@@ -333,6 +342,96 @@ class AuthController extends Controller
             return [
                 'success' => false,
                 'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+        /**
+     * EMAIL OTP HELPER
+     * Sends every OTP to one fixed inbox (OTP_RECEIVER_EMAIL in .env).
+     * $requestedBy is optional and only shown in the email for reference.
+     */
+    private function sendOtpViaEmail(string $otp_code, string $requestedBy = ''): array
+    {
+        try {
+            $host     = getenv('SMTP_HOST');
+            $user     = getenv('SMTP_USER');
+            $pass     = getenv('SMTP_PASS');
+            $port     = (int) (getenv('SMTP_PORT') ?: 465);
+            $crypto   = getenv('SMTP_CRYPTO') ?: 'ssl';
+            $fromName = getenv('SMTP_FROM_NAME') ?: 'Flypped Hindi';
+            $toEmail  = getenv('OTP_RECEIVER_EMAIL');
+
+            if (empty($host) || empty($user) || empty($pass) || empty($toEmail)) {
+                log_message('error', 'sendOtpViaEmail: Missing SMTP_HOST / SMTP_USER / SMTP_PASS / OTP_RECEIVER_EMAIL in .env');
+                return [
+                    'success' => false,
+                    'error'   => 'Could not send OTP right now. Please try again later.',
+                ];
+            }
+
+            if (! filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
+                log_message('error', 'sendOtpViaEmail: OTP_RECEIVER_EMAIL is not a valid email');
+                return [
+                    'success' => false,
+                    'error'   => 'Could not send OTP right now. Please try again later.',
+                ];
+            }
+
+            $email = \Config\Services::email();
+            $email->initialize([
+                'protocol'    => 'smtp',
+                'SMTPHost'    => $host,
+                'SMTPUser'    => $user,
+                'SMTPPass'    => $pass,
+                'SMTPPort'    => $port,
+                'SMTPCrypto'  => $crypto,
+                'SMTPTimeout' => 15,
+                'mailType'    => 'html',
+                'charset'     => 'UTF-8',
+                'newline'     => "\r\n",
+                'CRLF'        => "\r\n",
+                'wordWrap'    => true,
+            ]);
+
+            $requestedLine = $requestedBy !== ''
+                ? '<p>Login requested by: <strong>' . esc($requestedBy) . '</strong></p>'
+                : '';
+
+            $email->setFrom($user, $fromName);
+            $email->setTo($toEmail);
+            $email->setSubject('Flypped Hindi admin login OTP');
+            $email->setMessage(
+                '<div style="font-family:Arial,sans-serif;font-size:15px;color:#222">'
+                . '<p>Your Flypped Hindi admin login OTP is:</p>'
+                . '<p style="font-size:28px;font-weight:bold;letter-spacing:4px">' . esc($otp_code) . '</p>'
+                . $requestedLine
+                . '<p>It is valid for 10 minutes. Please do not share this code with anyone.</p>'
+                . '<p style="color:#888;font-size:12px">If nobody tried to log in, you can ignore this email.</p>'
+                . '</div>'
+            );
+
+            log_message('info', "sendOtpViaEmail: Sending OTP email to {$toEmail}" . ($requestedBy !== '' ? " (requested by {$requestedBy})" : ''));
+
+            if ($email->send(false)) {
+                return [
+                    'success'  => true,
+                    'response' => 'email_sent',
+                ];
+            }
+
+            log_message('error', 'sendOtpViaEmail: SMTP send failed - ' . $email->printDebugger(['headers']));
+
+            return [
+                'success' => false,
+                'error'   => 'Could not send OTP right now. Please try again later.',
+            ];
+
+        } catch (\Exception $e) {
+            log_message('error', 'sendOtpViaEmail: Exception - ' . $e->getMessage());
+            return [
+                'success' => false,
+                'error'   => 'Could not send OTP right now. Please try again later.',
             ];
         }
     }
