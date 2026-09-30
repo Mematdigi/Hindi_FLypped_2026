@@ -202,8 +202,6 @@ class AuthController extends Controller
                 ]);
             }
 
-            // 4. Send OTP via Twilio SMS
-            $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
 
             // 4. Send OTP via Twilio SMS
             $smsResult = $this->sendOtpViaTwilio($mobile, $otp_code);
@@ -327,7 +325,7 @@ class AuthController extends Controller
 
             return [
                 'success' => false,
-                'error'   => "Twilio API returned HTTP {$statusCode}: {$responseBody}",
+                'error'   => "Twilio API returned HTTP {$statusCode}: {$responseBody} ,message :{$message} ",
             ];
 
         } catch (\Exception $e) {
