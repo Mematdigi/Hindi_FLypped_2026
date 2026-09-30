@@ -4,6 +4,7 @@ Website: https://flyppedhindi.com/
 
 ## News
 
+- [Arunachal Pradesh Assam Rifles Attack: भारत-म्यांमार बॉर्डर पर अचानक हमला, एक जवान शहीद, 4 घायल](https://flyppedhindi.com/news/arunachal-pradesh-assam-rifles-attack)
 - [Rahul Gandhi NSUI DUSU Review Meeting: हार के बाद कन्हैया कुमार से टिकट बंटवारे पर सवाल](https://flyppedhindi.com/news/rahul-gandhi-nsui-dusu-review-meeting)
 - [LPU Student Protest: क्यों भड़के छात्र और क्लास सस्पेंड करने की नौबत क्यों आई?](https://flyppedhindi.com/news/lpu-student-protest)
 - [Bank Strike Postponed: 28 से 30 सितंबर की बैंक हड़ताल टली, जानें पूरा अपडेट](https://flyppedhindi.com/news/bank-strike-postponed)
@@ -28,7 +29,6 @@ Website: https://flyppedhindi.com/
 - [BRICS Summit Dinner Menu Controversy: राहुल गांधी के 80% नॉन-वेज वाले बयान पर BJP का पलटवार](https://flyppedhindi.com/news/brics-summit-dinner-menu-controversy)
 - [Kedarnath Dham Route Accident: पत्थर गिरने से महिला श्रद्धालु की मौत, यात्रा को लेकर प्रशासन अलर्ट](https://flyppedhindi.com/news/kedarnath-dham-route-accident)
 - [BRICS Summit 2026 India: नई दिल्ली सम्मेलन में भारत ने क्या हासिल किया? जानें 5 बड़े फैसले](https://flyppedhindi.com/news/brics-summit-2026-india)
-- [Putin to Visit India for BRICS Summit: मोदी-पुतिन की बैठक, फाइटर जेट समेत इन मुद्दों पर होगी चर्चा](https://flyppedhindi.com/news/putin-to-visit-india-for-brics-summit)
 
 ## Entertainment
 
@@ -92,6 +92,7 @@ Website: https://flyppedhindi.com/
 
 ## Business
 
+- [Nifty 50 SIP Return 5 Years: 5 साल में कितना मिला रिटर्न? क्या FD से भी कम रहा फायदा?](https://flyppedhindi.com/business/nifty-50-sip-return-5-years)
 - [Kalpataru Projects UAE Order: कंपनी को मिला 4,000 करोड़ रूपये से अधिक का गैस पाइपलाइन प्रोजेक्ट](https://flyppedhindi.com/business/kalpataru-projects-uae-order)
 - [Cloud Kitchen Business Ideas - कैसे शुरू करें, खर्च और जरूरी जानकारी](https://flyppedhindi.com/business/cloud-kitchen-business-ideas)
 - [Best Franchise Business in India: कम निवेश में अपना बिजनेस कैसे शुरू करें?](https://flyppedhindi.com/business/best-franchise-business-in-india)
@@ -116,15 +117,16 @@ Website: https://flyppedhindi.com/
 - [Real Estate Freelancing Business: बिना ऑफिस कैसे शुरू करें?](https://flyppedhindi.com/business/real-estate-freelancing-business)
 - [10 Food Business Ideas for College Students: पढ़ाई के साथ शुरू करें कमाई](https://flyppedhindi.com/business/10-food-business-ideas-for-college-students)
 - [GST for Health Insurance: क्या हेल्थ इंश्योरेंस प्रीमियम पर टैक्स देना है जरूरी? जानें नियम](https://flyppedhindi.com/business/gst-for-health-insurance-premium-in-india)
-- [फूड बिजनेस के लिए GST Registration Fees कितनी है? जानें नियम](https://flyppedhindi.com/business/gst-registration-fee)
 
 ## Health-Fitness
 
+- [HbA1c Test Kya Hai? जानें नॉर्मल रेंज, जांच का सही समय और बचाव के तरीके](https://flyppedhindi.com/health-fitness/hba1c-test-kya-hai)
 - [Radiation Therapy Cost: क्या वाकई बहुत महंगा है रेडिएशन थेरेपी का खर्च? जानिए असली सच!](https://flyppedhindi.com/health-fitness/radiation-therapy-cost)
 - [Multivitamin Tablets for Men: जानें पुरुषों के लिए क्यों आवश्यक हैं ये सप्लीमेंट्स और कैसे करें चुनाव?](https://flyppedhindi.com/health-fitness/multivitamin-tablets-for-men)
 - [HbA1c Test in Hindi: HbA1c टेस्ट क्यों जरूरी है? जानें सामान्य रेंज, कीमत और टेस्ट से जुड़ी जरूरी जानकारी](https://flyppedhindi.com/health-fitness/hba1c-test-in-hindi)
 - [CBC Test Kya Hota Hai? CBC ब्लड टेस्ट क्यों जरूरी है? जानें कारण, सामान्य रेंज और रिपोर्ट से जुड़ी जानकारी](https://flyppedhindi.com/health-fitness/cbc-test-kya-hota-hai)
 - [Cataract in Hindi: मोतियाबिंद क्यों होता है? जानें कारण, लक्षण, जांच और इलाज](https://flyppedhindi.com/health-fitness/cataract-in-hindi)
+- [Typhoid Fever in Hindi: टाइफाइड बुखार क्यों होता है? जानें लक्षण, इलाज, घरेल नुस्खे और खान-पान](https://flyppedhindi.com/health-fitness/typhoid-fever-in-hindi)
 - [Kidney Transplant Cost in India: भारत में किडनी ट्रांसप्लांट का खर्च कितना है? जानें प्रक्रिया, नुकसान और डाइट](https://flyppedhindi.com/health-fitness/kidney-transplant-cost-in-india)
 - [Mouth Ulcer in Hindi:  मुंह में बार-बार होते हैं छाले? जानें कारण, लक्षण, इलाज, बचाव और घरेलू नुस्खे ](https://flyppedhindi.com/health-fitness/mouth-ulcer-in-hindi)
 - [Dialysis Kya Hota Hai? डायलिसिस की जरूरत कब पड़ती है? जानें प्रकार, प्रक्रिया, नुकसान और डाइट चार्ट](https://flyppedhindi.com/health-fitness/dialysis-kya-hota-hai)
@@ -143,8 +145,6 @@ Website: https://flyppedhindi.com/
 - [Euthanasia Meaning in Hindi: इच्छामृत्यु क्या है? जानें नियम, प्रकार और इससे जुड़े सवालों के जवाब](https://flyppedhindi.com/health-fitness/euthanasia-meaning-in-hindi)
 - [Blood Cancer Symptoms in Hindi: ब्लड कैंसर के इन लक्षणों को न करें अनदेखा, जानें कारण, जांच और इलाज](https://flyppedhindi.com/health-fitness/blood-cancer-symptoms-in-hindi)
 - [Depression Meaning in Hindi: डिप्रेशन को न करें नजरअंदाज! जानें कारण, लक्षण और इलाज    ](https://flyppedhindi.com/health-fitness/depression-meaning-in-hindi)
-- [Viral Fever vs Bacterial Fever in Hindi: बुखार वायरल है या बैक्टीरियल? जानें अंतर, कारण, लक्षण, इलाज](https://flyppedhindi.com/health-fitness/viral-fever-vs-bacterial-fever-in-hindi)
-- [Symptoms of Kidney Disease in Hindi: किडनी रोग क्या होता है? जानें शुरुआती लक्षण, कारण, इलाज और बचाव](https://flyppedhindi.com/health-fitness/symptoms-of-kidney-disease-in-hindi)
 
 ## Lifestyle
 
@@ -176,6 +176,7 @@ Website: https://flyppedhindi.com/
 
 ## Travel
 
+- [Best Street Food in Bangalore: डोसा से लेकर चाट तक! जानें कहां मिलेगा लजीज और बजट-फ्रेंडली खाना?](https://flyppedhindi.com/travel/best-street-food-in-bangalore)
 - [Goa Famous Food: आखिर क्यों है गोवा का खाना इतना स्पेशल? जानें ये पारंपरिक व्यंजन](https://flyppedhindi.com/travel/goa-famous-food)
 - [Famous Food of Sikkim: क्यों खास है सिक्किम का स्थानीय भोजन और इसका अनूठा जायका?](https://flyppedhindi.com/travel/famous-food-of-sikkim)
 - [Best Restaurants in Varanasi: बनारस की गलियों में कौन से रेस्टोरेंट हैं सबसे खास?](https://flyppedhindi.com/travel/best-restaurants-in-varanasi)
@@ -200,7 +201,6 @@ Website: https://flyppedhindi.com/
 - [Visa Free Countries For Indians: बिना वीज़ा के विदेश घूमने का सपना होगा सच, जानिए पूरी लिस्ट!](https://flyppedhindi.com/travel/visa-free-countries-for-indians)
 - [Best Resorts in India: जानिए सुकून से भरे लग्ज़री रिसॉर्ट्स के बारे में](https://flyppedhindi.com/travel/best-resorts-in-india)
 - [Places to Visit in Nainital: नैनीताल की वो खूबसूरत जगहें जो आपकी ट्रिप को बना देंगी यादगार](https://flyppedhindi.com/travel/places-to-visit-in-nainital)
-- [Best Cafes in Delhi: जानिए कपल्स और फैमिली के लिए कौन सा कैफे है सबसे बेस्ट?](https://flyppedhindi.com/travel/best-cafes-in-delhi)
 
 ## Education
 
@@ -233,6 +233,8 @@ Website: https://flyppedhindi.com/
 ## Relationship
 
 - [Karwa Chauth Gift for Wife: हर बजट के लिए बेस्ट करवा चौथ गिफ्ट्स](https://flyppedhindi.com/relationship/karwa-chauth-gift-for-wife)
+- [Difference Between Love and Attraction: आकर्षण है या सच्चा प्यार? ऐसे पहचानें अपनी भावनाएं](https://flyppedhindi.com/relationship/difference-between-love-and-attraction)
+- [How to Impress a Girl in Hindi? पहली ही मुलाकात में बनाएं परफेक्ट इम्प्रेशन, अपनाएं ये आसान तरीके](https://flyppedhindi.com/relationship/how-to-impress-a-girl-in-hindi)
 - [Gift Ideas for Married Couples: बजट में चाहिए बेस्ट गिफ्ट? यहां देखें पूरी लिस्ट](https://flyppedhindi.com/relationship/gift-ideas-for-married-couples)
 - [What is Emotional Cheating? इमोशनल चीटिंग के बाद टूटे भरोसे को दोबारा कैसे कायम करें?](https://flyppedhindi.com/relationship/what-is-emotional-cheating)
 - [Relationship Counselling: पार्टनर से बार-बार होता है झगड़ा? ऐसे सुधारें अपना रिश्ता](https://flyppedhindi.com/relationship/relationship-counselling)
@@ -242,6 +244,8 @@ Website: https://flyppedhindi.com/
 - [Weekend Marriage Kya Hai? और क्या यह भारतीय समाज में सफल हो पाएगा?](https://flyppedhindi.com/relationship/weekend-marriage-kya-hai)
 - [Marriage Counseling in Hindi: शादीशुदा जिंदगी में दूरियां? इस एक फैसले से बच सकता है आपका परिवार!](https://flyppedhindi.com/relationship/marriage-counseling-in-hindi)
 - [Complicated Relationship Meaning in Hindi: प्यार है या सिर्फ मजबूरी? समझें](https://flyppedhindi.com/relationship/complicated-relationship-meaning-in-hindi)
+- [Live in Relationship Meaning in Hindi: क्या बिना शादी साथ रहना सही है? जानें नियम](https://flyppedhindi.com/relationship/live-in-relationship-meaning-in-hindi)
+- [Open Relationship Meaning in Hindi: प्यार, वफादारी और आजादी, क्या है असली सच?](https://flyppedhindi.com/relationship/open-relationship-meaning-in-hindi)
 - [Relationship Advice in Hindi: रिश्ते को मजबूत और खुशहाल बनाने के आसान तरीके, आप भी अपनाएं](https://flyppedhindi.com/relationship/relationship-advice-in-hindi)
 - [Green Flag Meaning in Relationship in Hindi: क्या आपका पार्टनर परफेक्ट है? ऐसे पहचानें!](https://flyppedhindi.com/relationship/green-flag-meaning-in-relationship-in-hindi)
 - [Questions to Ask Before Marriage in Hindi: लव हो या अरेंज! शादी से पहले अपने पार्टनर से जरूर पूछें ये सवाल](https://flyppedhindi.com/relationship/questions-to-ask-before-marriage-in-hindi)
@@ -253,19 +257,18 @@ Website: https://flyppedhindi.com/
 - [One Sided Love in Hindi: क्या एकतरफा प्यार सच्चा होता है? जानें दिल की अनकही कहानी](https://flyppedhindi.com/relationship/one-sided-love-in-hindi)
 - [Father’s Day in Hindi: Father’s Day के बारे में जरूरी और दिलचस्प तथ्य](https://flyppedhindi.com/relationship/fathers-day-in-hindi-fathers-day)
 - [True Love Meaning in Hindi: सच्चा प्यार क्या होता है, पहचान, संकेत और फायदे](https://flyppedhindi.com/relationship/true-love-meaning-in-hindi)
-- [Fake Love in Hindi: नकली प्यार क्या होता है? जानें संकेत, नुकसान, पहचानने के तरीके   ](https://flyppedhindi.com/relationship/fake-love-in-hindi)
-- [Gaslighting Meaning in Hindi: गैसलाइटिंग क्या है? जानें संकेत, प्रभाव और बचाव के तरीके](https://flyppedhindi.com/relationship/gaslighting-meaning-in-hindi)
-- [Sibling Bond in Hindi: जानें क्यों खास है भाई-बहन का अटूट रिश्ता?](https://flyppedhindi.com/relationship/sibling-bond-in-hindi)
-- [Family Bonding Meaning in Hindi: परिवारिक जुड़ाव का महत्व, लाभ और मजबूत रिश्तों के उपाय    ](https://flyppedhindi.com/relationship/family-bonding-meaning-in-hindi)
 
 ## Spiritual
 
+- [Durga Puja Kab Hai - दुर्गा पूजा इतनी खास क्यों है और इसका धार्मिक क्या है?](https://flyppedhindi.com/spiritual/durga-puja-kab-hai)
 - [Benefits of Hare Krishna Maha Mantra: जानें कैसे यह महामंत्र आपके जीवन को बदल सकता है!](https://flyppedhindi.com/spiritual/benefits-of-hare-krishna-maha-mantra)
 - [Ganesh Visarjan Kab Hai: जानिए सही तिथि, शुभ मुहूर्त और विसर्जन की पूरी विधि](https://flyppedhindi.com/spiritual/ganesh-visarjan-kab-hai)
 - [Radha Ashtami Vrat Vidhi: अपनी पूजा से कैसे करें राधा रानी को प्रसन्न? जानिए राधा अष्टमी व्रत विधि!](https://flyppedhindi.com/spiritual/radha-ashtami-vrat-vidhi)
 - [Santan Saptami Vrat Katha: क्या है इस व्रत का धार्मिक महत्व और पूजा के नियम? जानें शुभ मुहुर्त](https://flyppedhindi.com/spiritual/santan-saptami-vrat-katha)
 - [Kaal Sarp Dosh: काल सर्प दोष क्या है? जानें लक्षण, कारण, प्रकार, पूजा विधि और उपाय](https://flyppedhindi.com/spiritual/kaal-sarp-dosh)
 - [Dussehra Kyu Manaya Jata Hai? दशहरा पर क्यों किया जाता है रावण दहन? जाने तिथि, पूजा विधि, महत्व और कारण](https://flyppedhindi.com/spiritual/dussehra-kyu-manaya-jata-hai)
+- [Karwa Chauth 2026: किस दिन रखें व्रत? जानें चांद निकलने का समय, कथा, पूजा विधि एवं सामग्री    ](https://flyppedhindi.com/spiritual/karwa-chauth-2026)
+- [Shardiya Navratri 2026: शारदीय नवरात्रि कब होंगे शुरू? जानें कलश स्थापना एवं पूजा विधि, सामग्री और महत्व ](https://flyppedhindi.com/spiritual/shardiya-navratri-2026)
 - [Vishwakarma Puja Kab Hai? विश्वकर्मा पूजा 2026 कब है? जानें मुहूर्त, महत्व, पूजा विधि और सामग्री](https://flyppedhindi.com/spiritual/vishwakarma-puja-kab-hai)
 - [Nakshatra in Hindi: 27 नक्षत्र कौन-से हैं? जानें उनके नाम, स्वामी, विशेषताएं और महत्व](https://flyppedhindi.com/spiritual/nakshatra-in-hindi)
 - [Mangal Dosha Meaning in Hindi: मंगल दोष से कैसे निजात पाएं? जानें जांच, प्रभाव और आसान उपाय      ](https://flyppedhindi.com/spiritual/mangal-dosha-meaning-in-hindi)
@@ -282,9 +285,6 @@ Website: https://flyppedhindi.com/
 - [Hartalika Teej: हरतालिका तीज का व्रत कब रखें? जानें महत्व, पूजा सामग्री, विधि और मंत्र   ](https://flyppedhindi.com/spiritual/hartalika-teej)
 - [Kamika Ekadashi: कब है कामिका एकादशी? जानें सही तिथि और शुभ मुहूर्त!](https://flyppedhindi.com/spiritual/kamika-ekadashi)
 - [Raksha Bandhan Kyu Manaya Jata Hai? जानें पौराणिक कथाएं और महत्व](https://flyppedhindi.com/spiritual/raksha-bandhan-kyu-manaya-jata-hai)
-- [Nag Panchami: नाग पंचमी पर कैसे करें नाग देवता की पूजा? जानें पूजा विधि, दान, इतिहास, कथा   ](https://flyppedhindi.com/spiritual/nag-panchami)
-- [Hariyali Teej: हरियाली तीज कब है? व्रत नियम से लेकर इतिहास तक सब जानें यहां        ](https://flyppedhindi.com/spiritual/hariyali-teej)
-- [Guru Purnima: गुरु पूर्णिमा क्यों मनाते हैं? जानें इससे जुड़ा रोचक इतिहास](https://flyppedhindi.com/spiritual/guru-purnima)
 
 ## Crazy-Facts
 
