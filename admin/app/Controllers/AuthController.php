@@ -306,66 +306,83 @@ class AuthController extends Controller
         return $this->response->setJSON(['success' => true, 'message' => 'OTP verified']);
     }
 
-    
-        /**
+    /**
      * EMAIL OTP HELPER
      * Sends the OTP through a Google Apps Script web app (OTP_GAS_URL in .env),
      * because outbound SMTP ports are blocked on this droplet.
+     * Uses native cURL so the Apps Script 302 redirect is followed correctly.
      */
     private function sendOtpViaEmail(string $otp_code, string $requestedBy = ''): array
     {
+        $fail = [
+            'success' => false,
+            'error'   => 'Could not send OTP right now. Please try again later.',
+        ];
+
         try {
             $url    = getenv('OTP_GAS_URL');
             $secret = getenv('OTP_GAS_SECRET');
 
             if (empty($url) || empty($secret)) {
                 log_message('error', 'sendOtpViaEmail: Missing OTP_GAS_URL / OTP_GAS_SECRET in .env');
-                return [
-                    'success' => false,
-                    'error'   => 'Could not send OTP right now. Please try again later.',
-                ];
+                return $fail;
             }
+
+            $payload = json_encode([
+                'secret'       => $secret,
+                'otp'          => $otp_code,
+                'requested_by' => $requestedBy,
+            ]);
 
             log_message('info', 'sendOtpViaEmail: Sending OTP via Google Apps Script' . ($requestedBy !== '' ? " (requested by {$requestedBy})" : ''));
 
-            $client = \Config\Services::curlrequest();
-            $response = $client->post($url, [
-                'json' => [
-                    'secret'       => $secret,
-                    'otp'          => $otp_code,
-                    'requested_by' => $requestedBy,
-                ],
-                'allow_redirects' => true,
-                'timeout'         => 20,
-                'connect_timeout' => 5,
-                'http_errors'     => false,
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $payload,
+                CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Accept: application/json'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS      => 5,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_TIMEOUT        => 20,
             ]);
 
-            $statusCode = $response->getStatusCode();
-            $decoded    = json_decode(trim($response->getBody()), true) ?: [];
+            $body      = curl_exec($ch);
+            $curlError = curl_error($ch);
+            $status    = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+            $finalHost = parse_url((string) curl_getinfo($ch, CURLINFO_EFFECTIVE_URL), PHP_URL_HOST);
+            curl_close($ch);
 
-            log_message('info', "sendOtpViaEmail: Apps Script response [{$statusCode}] success=" . (!empty($decoded['success']) ? 'true' : 'false'));
+            if ($body === false) {
+                log_message('error', "sendOtpViaEmail: Connection to Apps Script failed - cURL error: {$curlError}");
+                return $fail;
+            }
 
-            if ($statusCode >= 200 && $statusCode < 300 && !empty($decoded['success'])) {
+            $decoded = json_decode(trim($body), true);
+
+            if ($status >= 200 && $status < 300 && is_array($decoded) && !empty($decoded['success'])) {
+                log_message('info', "sendOtpViaEmail: OTP email sent [HTTP {$status}]");
                 return [
                     'success'  => true,
                     'response' => 'email_sent',
                 ];
             }
 
-            log_message('error', "sendOtpViaEmail: Apps Script failed [{$statusCode}] " . ($decoded['message'] ?? 'no message'));
+            if (is_array($decoded)) {
+                $reason = $decoded['message'] ?? 'Apps Script returned success=false';
+            } else {
+                $snippet = trim(preg_replace('/\s+/', ' ', strip_tags($body)));
+                $reason  = 'Non-JSON response: ' . substr($snippet, 0, 200);
+            }
 
-            return [
-                'success' => false,
-                'error'   => 'Could not send OTP right now. Please try again later.',
-            ];
+            log_message('error', "sendOtpViaEmail: Apps Script failed [HTTP {$status}] host={$finalHost} reason={$reason}");
+
+            return $fail;
 
         } catch (\Throwable $e) {
             log_message('error', 'sendOtpViaEmail: Exception - ' . $e->getMessage());
-            return [
-                'success' => false,
-                'error'   => 'Could not send OTP right now. Please try again later.',
-            ];
+            return $fail;
         }
     }
 }
