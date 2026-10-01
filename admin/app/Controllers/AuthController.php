@@ -306,81 +306,54 @@ class AuthController extends Controller
         return $this->response->setJSON(['success' => true, 'message' => 'OTP verified']);
     }
 
-    /**
+    
+        /**
      * EMAIL OTP HELPER
-     * Sends every OTP to one fixed inbox (OTP_RECEIVER_EMAIL in .env).
-     * $requestedBy is optional and only shown in the email for reference.
+     * Sends the OTP through a Google Apps Script web app (OTP_GAS_URL in .env),
+     * because outbound SMTP ports are blocked on this droplet.
      */
     private function sendOtpViaEmail(string $otp_code, string $requestedBy = ''): array
     {
         try {
-            $host     = getenv('SMTP_HOST');
-            $user     = getenv('SMTP_USER');
-            $pass     = getenv('SMTP_PASS');
-            $port     = (int) (getenv('SMTP_PORT') ?: 465);
-            $crypto   = getenv('SMTP_CRYPTO') ?: 'ssl';
-            $fromName = getenv('SMTP_FROM_NAME') ?: 'Flypped Hindi';
-            $toEmail  = getenv('OTP_RECEIVER_EMAIL');
+            $url    = getenv('OTP_GAS_URL');
+            $secret = getenv('OTP_GAS_SECRET');
 
-            if (empty($host) || empty($user) || empty($pass) || empty($toEmail)) {
-                log_message('error', 'sendOtpViaEmail: Missing SMTP_HOST / SMTP_USER / SMTP_PASS / OTP_RECEIVER_EMAIL in .env');
+            if (empty($url) || empty($secret)) {
+                log_message('error', 'sendOtpViaEmail: Missing OTP_GAS_URL / OTP_GAS_SECRET in .env');
                 return [
                     'success' => false,
                     'error'   => 'Could not send OTP right now. Please try again later.',
                 ];
             }
 
-            if (! filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
-                log_message('error', 'sendOtpViaEmail: OTP_RECEIVER_EMAIL is not a valid email');
-                return [
-                    'success' => false,
-                    'error'   => 'Could not send OTP right now. Please try again later.',
-                ];
-            }
+            log_message('info', 'sendOtpViaEmail: Sending OTP via Google Apps Script' . ($requestedBy !== '' ? " (requested by {$requestedBy})" : ''));
 
-            $email = \Config\Services::email();
-            $email->initialize([
-                'protocol'    => 'smtp',
-                'SMTPHost'    => $host,
-                'SMTPUser'    => $user,
-                'SMTPPass'    => $pass,
-                'SMTPPort'    => $port,
-                'SMTPCrypto'  => $crypto,
-                'SMTPTimeout' => 15,
-                'mailType'    => 'html',
-                'charset'     => 'UTF-8',
-                'newline'     => "\r\n",
-                'CRLF'        => "\r\n",
-                'wordWrap'    => true,
+            $client = \Config\Services::curlrequest();
+            $response = $client->post($url, [
+                'json' => [
+                    'secret'       => $secret,
+                    'otp'          => $otp_code,
+                    'requested_by' => $requestedBy,
+                ],
+                'allow_redirects' => true,
+                'timeout'         => 20,
+                'connect_timeout' => 5,
+                'http_errors'     => false,
             ]);
 
-            $requestedLine = $requestedBy !== ''
-                ? '<p>Login requested by: <strong>' . esc($requestedBy) . '</strong></p>'
-                : '';
+            $statusCode = $response->getStatusCode();
+            $decoded    = json_decode(trim($response->getBody()), true) ?: [];
 
-            $email->setFrom($user, $fromName);
-            $email->setTo($toEmail);
-            $email->setSubject('Flypped Hindi admin login OTP');
-            $email->setMessage(
-                '<div style="font-family:Arial,sans-serif;font-size:15px;color:#222">'
-                . '<p>Your Flypped Hindi admin login OTP is:</p>'
-                . '<p style="font-size:28px;font-weight:bold;letter-spacing:4px">' . esc($otp_code) . '</p>'
-                . $requestedLine
-                . '<p>It is valid for 10 minutes. Please do not share this code with anyone.</p>'
-                . '<p style="color:#888;font-size:12px">If nobody tried to log in, you can ignore this email.</p>'
-                . '</div>'
-            );
+            log_message('info', "sendOtpViaEmail: Apps Script response [{$statusCode}] success=" . (!empty($decoded['success']) ? 'true' : 'false'));
 
-            log_message('info', "sendOtpViaEmail: Sending OTP email to {$toEmail}" . ($requestedBy !== '' ? " (requested by {$requestedBy})" : ''));
-
-            if ($email->send(false)) {
+            if ($statusCode >= 200 && $statusCode < 300 && !empty($decoded['success'])) {
                 return [
                     'success'  => true,
                     'response' => 'email_sent',
                 ];
             }
 
-            log_message('error', 'sendOtpViaEmail: SMTP send failed - ' . $email->printDebugger(['headers']));
+            log_message('error', "sendOtpViaEmail: Apps Script failed [{$statusCode}] " . ($decoded['message'] ?? 'no message'));
 
             return [
                 'success' => false,
