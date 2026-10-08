@@ -1,6 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
+        <loc>https://flyppedhindi.com/shashi-tharoor-on-rahul-gandhi-detention</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Flypped Hindi News</news:name>
+                <news:language>hi</news:language>
+            </news:publication>
+            <news:publication_date>2026-10-07T18:19:00+05:30</news:publication_date>
+            <news:title>Shashi Tharoor on Rahul Gandhi Detention: राहुल गांधी की हिरासत पर बोले शशि थरूर, सरकार को दी चेतावनी!</news:title>
+        </news:news>
+    </url>
+    <url>
+        <loc>https://flyppedhindi.com/virat-kohli-falahari-maharaj-controversy</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Flypped Hindi News</news:name>
+                <news:language>hi</news:language>
+            </news:publication>
+            <news:publication_date>2026-10-07T16:02:00+05:30</news:publication_date>
+            <news:title>Virat Kohli Falahari Maharaj Controversy - 5 करोड़ में दर्शन के दावे पर विराट कोहली का बयान!</news:title>
+        </news:news>
+    </url>
+    <url>
         <loc>https://flyppedhindi.com/acp-vivek-bhagat-promotion-put-on-hold</loc>
         <news:news>
             <news:publication>
@@ -9,17 +31,6 @@
             </news:publication>
             <news:publication_date>2026-10-06T11:42:00+05:30</news:publication_date>
             <news:title>ACP Vivek Bhagat Promotion Put on Hold: महिला पत्रकारों की शिकायत के बीच ADCP चार्ज रोका गया</news:title>
-        </news:news>
-    </url>
-    <url>
-        <loc>https://flyppedhindi.com/sc-rejects-gyanesh-kumar-suspension</loc>
-        <news:news>
-            <news:publication>
-                <news:name>Flypped Hindi News</news:name>
-                <news:language>hi</news:language>
-            </news:publication>
-            <news:publication_date>2026-10-05T17:09:00+05:30</news:publication_date>
-            <news:title>SC Rejects Gyanesh Kumar Suspension: सुप्रीम कोर्ट ने निलंबन से किया इनकार, EC को नोटिस</news:title>
         </news:news>
     </url>
 </urlset>
