@@ -4,11 +4,9 @@ namespace App\Controllers;
 
 class PostController extends BaseController
 {
-    // Method to display all posts with filtering
     public function allPosts()
     {
         try {
-            // Connect to the database
             $db = \Config\Database::connect();
             
             // Get filter parameters from GET request
@@ -733,39 +731,30 @@ class PostController extends BaseController
             $this->sanitizeSlug($data['post_slug']) : 
             $this->generateSlug($data['post_title']);
 
-        $currentTime = date('Y-m-d H:i:s');
-        $currentTimeGmt = gmdate('Y-m-d H:i:s');
-        
-        // 1. Date Handling (Using the standard post_date input)
-        if (!empty($data['post_date'])) {
-            // Use the calendar date but retain the original time so it doesn't reset to midnight
-            $originalTime = date('H:i:s', strtotime($post->post_date));
-            $publishTime = date('Y-m-d', strtotime($data['post_date'])) . ' ' . $originalTime;
-            $publishTimeGmt = gmdate('Y-m-d H:i:s', strtotime($publishTime));
-        } else {
-            // Fallback to exactly what is in the database
-            $publishTime = $post->post_date;
-            $publishTimeGmt = $post->post_date_gmt;
-        }
+        // ========================================
+        // DATE & STATUS (FIXED)
+        // - Uses the full date AND time from the form (no more "keep old time")
+        // - Form values are IST; post_date = IST, post_date_gmt = UTC
+        // - Supports publish / draft / future (scheduled), past & future dates
+        // ========================================
+        $dateFields = $this->resolvePostDates(
+            (string) ($data['post_status'] ?? 'publish'),
+            $data['post_date'] ?? null,
+            $data['schedule_time'] ?? null,
+            $post
+        );
+        $postStatus = $dateFields['post_status'];
 
-        // 2. Validate and set the Status (Restricted to just publish and draft)
-        $submittedStatus = $data['post_status'] ?? 'publish';
-        $allowedStatuses = ['publish', 'draft'];
-        $postStatus = in_array($submittedStatus, $allowedStatuses) ? $submittedStatus : 'publish';
-
-        // 3. Safeguard: If they select "Publish" but pick a date in the future, auto-switch to "future"
-        if ($postStatus === 'publish' && $publishTime > $currentTime) {
-            $postStatus = 'future';
-        }
+        log_message('info', "Date resolved: status={$postStatus}, post_date={$dateFields['post_date']}, gmt={$dateFields['post_date_gmt']}");
 
         $updateData = [
             'post_title' => $data['post_title'],
             'post_content' => $data['post_content'],
             'post_author' => $data['post_author'],
-            'post_date' => $publishTime,
-            'post_date_gmt' => $publishTimeGmt,
-            'post_modified' => $currentTime,
-            'post_modified_gmt' => $currentTimeGmt,
+            'post_date' => $dateFields['post_date'],
+            'post_date_gmt' => $dateFields['post_date_gmt'],
+            'post_modified' => $dateFields['post_modified'],
+            'post_modified_gmt' => $dateFields['post_modified_gmt'],
             'post_status' => $postStatus,
             'post_name' => $postSlug,
         ];
@@ -925,6 +914,67 @@ class PostController extends BaseController
     private function sanitizeSlug($slug)
     {
         return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $slug), '-'));
+    }
+
+    /**
+     * Build all WordPress date/status columns from the edit form.
+     *
+     * - Form values are IST wall-clock time ("Y-m-d\TH:i").
+     * - post_date      = IST local time (WordPress convention)
+     * - post_date_gmt  = same moment in UTC
+     * - Past + future dates are both allowed.
+     * - WordPress rules:
+     *     Scheduled + past time   → publish (with that back-date)
+     *     Publish   + future time → future  (scheduled)
+     *     Draft                   → keeps the chosen date
+     */
+    private function resolvePostDates(string $requestedStatus, $postDateInput, $scheduleInput, $existingPost = null): array
+    {
+        $ist = new \DateTimeZone('Asia/Kolkata');
+        $utc = new \DateTimeZone('UTC');
+        $now = new \DateTime('now', $ist);
+
+        $status = in_array($requestedStatus, ['publish', 'draft', 'future'], true)
+            ? $requestedStatus
+            : 'publish';
+
+        // Scheduled uses schedule_time (falls back to post_date); others use post_date
+        $raw = ($status === 'future' && !empty($scheduleInput)) ? $scheduleInput : $postDateInput;
+        $raw = trim((string) $raw);
+
+        $local = false;
+        if ($raw !== '') {
+            // "!" resets unspecified fields (seconds) to 0
+            $local = \DateTime::createFromFormat('!Y-m-d\TH:i', $raw, $ist)
+                  ?: \DateTime::createFromFormat('!Y-m-d\TH:i:s', $raw, $ist)
+                  ?: \DateTime::createFromFormat('!Y-m-d H:i:s', $raw, $ist);
+        }
+
+        // Invalid / empty input → keep the existing post date, else now
+        if (!$local) {
+            if ($existingPost && !empty($existingPost->post_date) && $existingPost->post_date !== '0000-00-00 00:00:00') {
+                $local = new \DateTime($existingPost->post_date, $ist);
+            } else {
+                $local = clone $now;
+            }
+        }
+
+        if ($status === 'future' && $local <= $now) {
+            $status = 'publish';
+        } elseif ($status === 'publish' && $local > $now) {
+            $status = 'future';
+        }
+
+        $gmt    = (clone $local)->setTimezone($utc);
+        $nowGmt = (clone $now)->setTimezone($utc);
+
+        return [
+            'post_status'       => $status,
+            'post_date'         => $local->format('Y-m-d H:i:s'),
+            'post_date_gmt'     => $gmt->format('Y-m-d H:i:s'),
+            'post_modified'     => $now->format('Y-m-d H:i:s'),
+            'post_modified_gmt' => $nowGmt->format('Y-m-d H:i:s'),
+        ];
     }
 
     // AJAX endpoint to get SEO analysis
