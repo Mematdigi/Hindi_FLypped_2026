@@ -1,6 +1,17 @@
 <!-- ===== Header Section ===== -->
 <?php include(APPPATH . 'Views/header.php'); ?>
 
+<?php
+ 
+  $istZone = new DateTimeZone('Asia/Kolkata');
+  if (!empty($post->post_date) && $post->post_date !== '0000-00-00 00:00:00') {
+      $postDateObj = new DateTime($post->post_date, $istZone);
+  } else {
+      $postDateObj = new DateTime('now', $istZone);
+  }
+  $postDateLocal = $postDateObj->format('Y-m-d\TH:i');
+?>
+
   <!-- ===== Add the form with the appropriate method and action ===== -->
   <form method="post" action="<?= base_url('update_post/' . $post->ID) ?>" enctype="multipart/form-data" id="editPostForm">
     <div class="main-panel">
@@ -167,7 +178,8 @@
             <div class="card shadow-sm mb-4 mt-4" style="border-radius: 10px;">
                 <div class="card-header BlogHeader text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0"><i class="fa fa-question-circle"></i> Edit FAQ Schema</h4>
-                    <button type="button" class="btn btn-sm btn-light text-primary" id="addFaqBtn">
+                    <!-- FIX: was a duplicate id="addFaqBtn" (so this button never worked) -->
+                    <button type="button" class="btn btn-sm btn-light text-primary" id="addFaqQuestionBtn">
                         <i class="fa fa-plus"></i> Add Question
                     </button>
                 </div>
@@ -192,17 +204,18 @@
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
+                            <!-- FIX: empty placeholder is no longer "required" — it was silently blocking "Update Post" -->
                             <div class="faq-item mb-3 p-3 border rounded bg-light position-relative">
                                 <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 10px; right: 10px;" onclick="this.parentElement.remove()">
                                     <i class="fa fa-times"></i>
                                 </button>
                                 <div class="form-group mb-2">
                                     <label class="small font-weight-bold">Question</label>
-                                    <input type="text" class="form-control" name="faq_questions[]" placeholder="e.g., What is SEO?" required>
+                                    <input type="text" class="form-control" name="faq_questions[]" placeholder="e.g., What is SEO?">
                                 </div>
                                 <div class="form-group mb-0">
                                     <label class="small font-weight-bold">Answer</label>
-                                    <textarea class="form-control" name="faq_answers[]" rows="2" placeholder="Enter the answer..." required></textarea>
+                                    <textarea class="form-control" name="faq_answers[]" rows="2" placeholder="Enter the answer..."></textarea>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -360,6 +373,11 @@
 .char-counter.warning { color: #ffc107; }
 .char-counter.danger { color: #dc3545; }
 .char-counter.success { color: #28a745; }
+
+/* Date/status hint */
+#dateStatusHint { font-size: 12px; margin-top: 6px; display: block; }
+#dateStatusHint.hint-info { color: #17a2b8; }
+#dateStatusHint.hint-warn { color: #e6a817; }
 </style>
 
 <!-- ── FAQ JavaScript ── -->
@@ -442,29 +460,18 @@
           <!-- Post Settings Section (col-4) -->
           <div class="col-lg-4">
 
-            <!-- Edit Post Date & Time Section (Added for IST Local Time) -->
+            <!-- Edit Post Date & Time Section (IST Local Time) -->
             <div class="card shadow-sm mb-4" style="border-radius: 10px;">
               <div class="card-header text-white" style="background-color: #9258d4; border-radius: 10px 10px 0 0;">
                 <h4 class="mb-0" style="font-size: 16px; font-weight: 600;">Edit Post Date & Time</h4>
               </div>
               <div class="card-body">
                 <div class="form-group mb-0">
-                    <label for="post_date_edit" style="font-weight: 500; font-size: 15px; margin-bottom: 10px;">Publish Date & Time (Edit Here):</label>
-                    <input type="datetime-local" class="form-control" name="post_date" id="post_date_edit" form="editPostForm" value="<?php 
-                        // Using IST timezone as requested
-                        $timezone = new DateTimeZone('Asia/Kolkata');
-                        
-                        if (!empty($post->post_date) && $post->post_date !== '0000-00-00 00:00:00') {
-                            // Load existing DB time and format it
-                            $dt = new DateTime($post->post_date);
-                            $dt->setTimezone($timezone);
-                            echo $dt->format('Y-m-d\TH:i');
-                        } else {
-                            // If empty, initialize to the current IST local time
-                            $dt = new DateTime('now', $timezone);
-                            echo $dt->format('Y-m-d\TH:i');
-                        }
-                    ?>" style="padding: 10px; border-radius: 5px; border: 1px solid #ced4da; box-shadow: none;">
+                    <label for="post_date_edit" style="font-weight: 500; font-size: 15px; margin-bottom: 10px;">Publish Date & Time (IST):</label>
+                    <input type="datetime-local" class="form-control" name="post_date" id="post_date_edit" form="editPostForm"
+                           value="<?= esc($postDateLocal) ?>"
+                           style="padding: 10px; border-radius: 5px; border: 1px solid #ced4da; box-shadow: none;">
+                    <small id="dateStatusHint"></small>
                 </div>
               </div>
             </div>
@@ -493,12 +500,12 @@
 
                 <div id="scheduledDateTime" style="display: <?= ($post->post_status == 'future') ? 'block' : 'none'; ?>;">
                     <div class="form-group">
-                        <label for="schedule_time">Schedule Date & Time:</label>
+                        <label for="schedule_time">Schedule Date & Time (IST):</label>
                         <input type="datetime-local"
                                 class="form-control"
                                 name="schedule_time"
                                 id="schedule_time"
-                                value="<?php echo date('Y-m-d\TH:i', strtotime($post->post_date)); ?>"
+                                value="<?= esc($postDateLocal) ?>"
                                 form="editPostForm">
                         <small class="text-muted">
                             Post will be automatically published at this time
@@ -728,41 +735,95 @@ document.getElementById('featured_image').addEventListener('change', function(e)
     }
 });
 
-// Post Status / Schedule functionality
-document.getElementById('post_status')?.addEventListener('change', function() {
-    const scheduledDiv = document.getElementById('scheduledDateTime');
-    const scheduleTimeInput = document.getElementById('schedule_time');
-    
-    if (this.value === 'future') {
-        scheduledDiv.style.display = 'block';
-        scheduleTimeInput.required = true;
-        let now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        scheduleTimeInput.min = now.toISOString().slice(0, 16);
-    } else {
-        scheduledDiv.style.display = 'none';
-        scheduleTimeInput.required = false;
-        scheduleTimeInput.value = '';
-        scheduleTimeInput.removeAttribute('min');
-    }
-});
+// ==========================================
+// Post Status / Date / Schedule functionality (FIXED)
+// - Never clears the date when switching status
+// - No "min" restriction: past & future dates both allowed
+// - "Publish Date" and "Schedule Date" stay in sync (one real date)
+// - All comparisons done in IST regardless of the browser's timezone
+// ==========================================
+(function () {
+    const statusEl   = document.getElementById('post_status');
+    const dateInput  = document.getElementById('post_date_edit');
+    const schedDiv   = document.getElementById('scheduledDateTime');
+    const schedInput = document.getElementById('schedule_time');
+    const hint       = document.getElementById('dateStatusHint');
+    const form       = document.getElementById('editPostForm');
 
-// Initial load state for post status
-window.addEventListener('DOMContentLoaded', function() {
-    const postStatusEl = document.getElementById('post_status');
-    const scheduledDiv = document.getElementById('scheduledDateTime');
-    const scheduleTimeInput = document.getElementById('schedule_time');
-    
-    if(postStatusEl) {
-        if (postStatusEl.value === 'future') {
-            if(scheduledDiv) scheduledDiv.style.display = 'block';
-            if(scheduleTimeInput) scheduleTimeInput.required = true;
-        } else {
-            if(scheduledDiv) scheduledDiv.style.display = 'none';
-            if(scheduleTimeInput) scheduleTimeInput.required = false;
+    if (!statusEl || !dateInput) return;
+
+    // Current IST wall time as "YYYY-MM-DDTHH:MM"
+    function nowIST() {
+        return new Date(Date.now() + 330 * 60000).toISOString().slice(0, 16);
+    }
+
+    function currentValue() {
+        if (statusEl.value === 'future' && schedInput && schedInput.value) return schedInput.value;
+        return dateInput.value;
+    }
+
+    function updateHint() {
+        if (!hint) return;
+        const val = currentValue();
+        hint.textContent = '';
+        hint.className = '';
+        if (!val) return;
+
+        const isFuture = val > nowIST(); // same format → string compare is safe
+        if (statusEl.value === 'future' && !isFuture) {
+            hint.textContent = 'This time is in the past — the post will be published immediately with this date.';
+            hint.className = 'hint-warn';
+        } else if (statusEl.value === 'publish' && isFuture) {
+            hint.textContent = 'This time is in the future — the post will be scheduled for this date.';
+            hint.className = 'hint-info';
+        } else if (statusEl.value === 'draft') {
+            hint.textContent = 'Draft — this date will be kept for when you publish.';
+            hint.className = 'hint-info';
         }
     }
-});
+
+    function applyStatus() {
+        const isScheduled = statusEl.value === 'future';
+        if (schedDiv) schedDiv.style.display = isScheduled ? 'block' : 'none';
+        if (schedInput) {
+            schedInput.required = isScheduled;
+            schedInput.removeAttribute('min');
+            // Carry the selected date into the schedule field instead of clearing it
+            if (!schedInput.value) schedInput.value = dateInput.value;
+        }
+        updateHint();
+    }
+
+    // Keep both fields pointing at the same date
+    dateInput.addEventListener('input', function () {
+        if (schedInput) schedInput.value = dateInput.value;
+        updateHint();
+    });
+    if (schedInput) {
+        schedInput.addEventListener('input', function () {
+            dateInput.value = schedInput.value;
+            updateHint();
+        });
+    }
+
+    statusEl.addEventListener('change', applyStatus);
+
+    // Final sync right before submit
+    if (form) {
+        form.addEventListener('submit', function () {
+            if (schedInput) {
+                if (statusEl.value === 'future' && schedInput.value) {
+                    dateInput.value = schedInput.value;
+                } else {
+                    schedInput.value = dateInput.value;
+                }
+            }
+        });
+    }
+
+    // Initial load state
+    applyStatus();
+})();
 
 // Delete featured image via × button
 function deleteFeaturedImage(postId) {
@@ -889,10 +950,16 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('faqItemsContainer');
-    const addBtn = document.getElementById('addFaqBtn');
+    // FIX: both "Add FAQ" (purple card) and "Add Question" buttons add a FAQ row
+    const addBtns = [
+        document.getElementById('addFaqBtn'),
+        document.getElementById('addFaqQuestionBtn')
+    ].filter(Boolean);
 
-    if(addBtn && container) {
-        addBtn.addEventListener('click', function() {
+    if (!container) return;
+
+    addBtns.forEach(function (btn) {
+        btn.addEventListener('click', function() {
             const itemHtml = `
                 <div class="faq-item mb-3 p-3 border rounded bg-light position-relative">
                     <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 10px; right: 10px;" onclick="this.parentElement.remove()">
@@ -910,6 +977,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             container.insertAdjacentHTML('beforeend', itemHtml);
         });
-    }
+    });
 });
 </script>
